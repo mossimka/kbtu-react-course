@@ -1,0 +1,25 @@
+import functionOne from "./task-1.js";
+import functionTwo from "./task-2.js";
+import functionThree from "./task-3.js";
+import functionFour from "./task-4.js";
+import functionFive from "./task-5.js";
+import functionSix from "./task-6.js";
+import functionSeven from "./task-7.js";
+import functionEight from "./task-8.js";
+import functionNine from "./task-9.js";
+import functionTen from "./task-10.js";
+import functionEleven from "./task-11.js";
+import finalTask from "./final-task.js";
+
+functionOne();
+functionTwo();
+functionThree();
+functionFour();
+functionFive();
+functionSix();
+functionSeven();
+functionEight();
+functionNine();
+functionTen();
+functionEleven();
+finalTask();
