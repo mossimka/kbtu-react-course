@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Runtime Lab — Closures, Promises &amp; the Event Loop</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="layout">
+
+    <!-- ============ SECTION 1: TASKS ============ -->
+    <section class="panel" id="panel-tasks">
+      <div class="panel__head">
+        <h2>01 · Tasks</h2>
+        <p>Each row below is one closure returned by <code>createTask(name)</code>. The execution count inside is private — nothing outside the closure can touch it directly.</p>
+      </div>
+
+      <div class="tasklist" id="taskList"><!-- rows injected by script.js --></div>
+
+      <div class="panel__actions">
+        <button class="btn btn--primary" id="runAllBtn">Run All Tasks</button>
+        <button class="btn btn--ghost" id="resetAllBtn">Reset All</button>
+        <span class="status-line" id="allStatus"></span>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 2: SEQUENTIAL VS CONCURRENT ============ -->
+    <section class="panel" id="panel-compare">
+      <div class="panel__head">
+        <h2>02 · Sequential vs. concurrent</h2>
+        <p>Same three tasks, two strategies. One awaits them one by one; the other starts them all in the same tick and waits on <code>Promise.allSettled</code>.</p>
+      </div>
+
+      <div class="panel__actions">
+        <button class="btn btn--primary" id="compareBtn">Run Comparison</button>
+      </div>
+
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h3>Sequential — <code>await</code> in a row</h3>
+          <div class="compare-card__time" id="seqTime">—</div>
+          <pre class="log" id="seqLog"></pre>
+        </div>
+        <div class="compare-card">
+          <h3>Concurrent — <code>Promise.allSettled</code></h3>
+          <div class="compare-card__time" id="conTime">—</div>
+          <pre class="log" id="conLog"></pre>
+        </div>
+      </div>
+      <p class="explain" id="compareExplain"></p>
+    </section>
+
+    <!-- ============ SECTION 3: EVENT LOOP DEMO ============ -->
+    <section class="panel" id="panel-eventloop">
+      <div class="panel__head">
+        <h2>03 · Event loop demo</h2>
+        <p>The code below mixes synchronous logs, two timers, two microtasks and one async function. Guess the order before you press run.</p>
+      </div>
+
+      <pre class="log log--code" id="demoCode"></pre>
+
+      <div class="panel__actions">
+        <button class="btn btn--primary" id="predictBtn">Show My Prediction</button>
+        <button class="btn btn--primary" id="runDemoBtn">Run It For Real</button>
+      </div>
+
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h3>Predicted order</h3>
+          <pre class="log" id="predictedLog"></pre>
+        </div>
+        <div class="compare-card">
+          <h3>Actual order (console + here)</h3>
+          <pre class="log" id="actualLog"></pre>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="js/script.js"></script>
+</body>
+</html>
