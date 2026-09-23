@@ -1,0 +1,81 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/shared' as shared;
+
+.section {
+    @include shared.container;
+    @include shared.section-space;
+    border-top: $border-width solid $line;
+}
+.label {
+    @include shared.label;
+    margin-bottom: $space-xl;
+}
+.content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-3xl - $space-sm - $space-xs;
+}
+.title {
+    @include shared.section-title;
+    color: $ink;
+    span {
+        color: $blue;
+    }
+}
+.text {
+    max-width: 500px;
+    color: $muted;
+    font-size: $body-size;
+    line-height: 1.8;
+    .lead {
+        color: $ink;
+        font-size: $space-sm;
+        line-height: 1.45;
+    }
+}
+.achievements {
+    display: flex;
+    gap: clamp(30px, 10vw, 140px);
+    border-top: $border-width solid $line;
+    margin-top: $space-3xl - $space-sm - $space-xs;
+    padding-top: $space-xs + $space-2xs;
+    div {
+        display: flex;
+        align-items: baseline;
+        gap: $space-xs;
+    }
+    strong {
+        color: $deep-blue;
+        font-size: $space-md + $space-2xs;
+    }
+    span {
+        color: $muted;
+        font: 10px/1.45 $mono;
+        text-transform: uppercase;
+    }
+}
+@include shared.mobile-only {
+    .section {
+        @include shared.mobile-container;
+        padding-top: $space-2xl;
+        padding-bottom: $space-2xl;
+    }
+    .label {
+        margin-bottom: $space-lg;
+    }
+    .content {
+        grid-template-columns: 1fr;
+        gap: $space-xl;
+    }
+    .text .lead {
+        font-size: $space-sm;
+    }
+    .achievements {
+        gap: $space-md;
+        margin-top: $space-2xl - $space-md - $space-xs;
+        flex-wrap: wrap;
+        div {
+            min-width: 135px;
+        }
+    }
+}

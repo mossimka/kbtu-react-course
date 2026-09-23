@@ -1,0 +1,55 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/shared' as shared;
+
+.topbar {
+    @include shared.container;
+    height: $space-3xl - $space-sm;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.logo {
+    color: $ink;
+    font-size: $space-md;
+    font-weight: 800;
+    letter-spacing: -1px;
+    span {
+        color: $green;
+    }
+}
+.nav {
+    display: flex;
+    gap: $space-lg;
+    margin-left: $space-3xl;
+    font: $small-size $mono;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    a {
+        transition: color $transition;
+        &:hover {
+            color: $green;
+        }
+    }
+}
+.headerLink {
+    color: $ink;
+    font: $small-size $mono;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: color $transition;
+    &:hover {
+        color: $green;
+    }
+}
+@include shared.mobile-only {
+    .topbar {
+        @include shared.mobile-container;
+        height: $space-2xl - $space-xs;
+    }
+    .nav {
+        display: none;
+    }
+    .headerLink {
+        font-size: $small-size - 1px;
+    }
+}

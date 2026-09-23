@@ -1,0 +1,145 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/shared' as shared;
+
+.hero {
+    @include shared.container;
+    min-height: $space-3xl * 5 + $space-md;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+    position: relative;
+    padding-top: $space-xl;
+    padding-bottom: $space-3xl - $space-xl;
+    overflow: hidden;
+}
+.copy {
+    position: relative;
+    z-index: 1;
+    padding-bottom: $space-lg;
+}
+.eyebrow {
+    @include shared.label;
+}
+.title {
+    color: $ink;
+    font-size: clamp(55px, 7vw, 102px);
+    line-height: 0.95;
+    letter-spacing: -5px;
+    margin: $space-lg 0;
+    font-weight: 800;
+    em {
+        color: $green;
+        font-weight: 500;
+        font-style: normal;
+    }
+}
+.intro {
+    max-width: $reading-width - 250px;
+    color: $muted;
+    font-size: $body-size + 1px;
+    line-height: 1.7;
+}
+.actions {
+    margin-top: $space-lg;
+}
+.button {
+    @include shared.button;
+}
+.darkButton {
+    background: $deep-blue !important;
+    color: $paper !important;
+    &:hover {
+        background: $green !important;
+    }
+}
+.link {
+    color: $deep-blue;
+    border-bottom: $border-width solid $line;
+    padding-bottom: $space-2xs;
+    font: $small-size $mono;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    &:hover {
+        color: $green;
+    }
+}
+.portraitWrap {
+    width: min(100%, 430px);
+    justify-self: end;
+    position: relative;
+    padding: $space-sm $space-md $space-md 0;
+}
+.portraitFrame {
+    aspect-ratio: 0.82;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    background: $mint;
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: saturate(0.65) contrast(0.95);
+    }
+}
+.portraitNote {
+    position: absolute;
+    z-index: 2;
+    left: -40px;
+    bottom: 0;
+    background: $green;
+    color: $paper;
+    padding: $space-sm $space-md;
+    font-size: $small-size;
+    line-height: 1.55;
+    font-family: $mono;
+    text-transform: uppercase;
+    strong {
+        color: $ink;
+        font-weight: 500;
+    }
+}
+.orbit {
+    position: absolute;
+    border: $border-width solid $line;
+    border-radius: 50%;
+    pointer-events: none;
+}
+.orbitOne {
+    width: 500px;
+    height: 500px;
+    right: -110px;
+    top: -24px;
+}
+.orbitTwo {
+    width: 290px;
+    height: 290px;
+    right: 50px;
+    top: 84px;
+    border-color: $blue;
+    opacity: 0.35;
+}
+@include shared.mobile-only {
+    .hero {
+        @include shared.mobile-container;
+        display: block;
+        min-height: auto;
+        padding-top: $space-2xl - $space-sm;
+        padding-bottom: $space-2xl + $space-sm;
+    }
+    .title {
+        font-size: 56px;
+        letter-spacing: -3px;
+    }
+    .portraitWrap {
+        width: 85%;
+        margin: $space-2xl - $space-sm 0 auto;
+    }
+    .portraitNote {
+        left: -28px;
+    }
+    .scrollCue {
+        left: $mobile-padding;
+    }
+}

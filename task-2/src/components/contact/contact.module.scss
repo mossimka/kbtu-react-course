@@ -1,0 +1,75 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/shared' as shared;
+
+.section {
+    padding: 120px max(42px, calc((100% - 1156px) / 2));
+    background: $deep-blue;
+    color: $paper;
+}
+.inner {
+    max-width: 680px;
+}
+.label {
+    @include shared.label;
+    color: #9dd7bd;
+    margin-bottom: $space-xl;
+}
+.title {
+    color: $paper;
+    font-size: clamp(56px, 8vw, 105px);
+    line-height: 0.98;
+    letter-spacing: -3px;
+    margin: 0 0 28px;
+    em {
+        color: #79d1ad;
+        font-style: normal;
+    }
+}
+.text {
+    color: #c5ddd5;
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 370px;
+}
+.button {
+    @include shared.button;
+    background: $green !important;
+    color: $paper !important;
+    margin-top: 14px;
+    &:hover {
+        background: #61bd9a !important;
+    }
+}
+.links {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    margin-top: 100px;
+    color: #d9ece6;
+    font: 11px $mono;
+    text-transform: uppercase;
+    flex-wrap: wrap;
+    a:hover {
+        color: #79d1ad;
+    }
+    .location {
+        color: #9fc0b7;
+        margin-left: auto;
+    }
+}
+@include shared.mobile-only {
+    .section {
+        padding: $space-2xl $mobile-padding;
+    }
+    .label {
+        margin-bottom: $space-lg;
+    }
+    .links {
+        margin-top: $space-2xl - $space-xs;
+        gap: $space-sm;
+        .location {
+            margin-left: 0;
+            width: 100%;
+        }
+    }
+}
