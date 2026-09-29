@@ -1,0 +1,28 @@
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 0 16px;
+    color: #8793a1;
+    font:
+        11px 'DM Mono',
+        monospace;
+    letter-spacing: 0.06em;
+}
+
+.toolbar button {
+    border: 0;
+    background: transparent;
+    color: #8793a1;
+    font: inherit;
+}
+
+.toolbar button:hover {
+    color: #f2cc60;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}

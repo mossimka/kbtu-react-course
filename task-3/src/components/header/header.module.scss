@@ -1,0 +1,98 @@
+.root {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 24px 32px 0;
+}
+
+.topline {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #26313c;
+    color: #8793a1;
+    font:
+        11px 'DM Mono',
+        monospace;
+    letter-spacing: 0.08em;
+}
+
+.heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    padding: 56px 0 44px;
+}
+
+.eyebrow {
+    margin: 0 0 12px;
+    color: #79c0ff;
+    font:
+        11px 'DM Mono',
+        monospace;
+    letter-spacing: 0.12em;
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(36px, 6vw, 72px);
+    line-height: 0.95;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+.signal {
+    color: #7ee787;
+    font:
+        11px 'DM Mono',
+        monospace;
+    letter-spacing: 0.06em;
+}
+
+.dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 7px;
+    border-radius: 50%;
+    background: #7ee787;
+    box-shadow: 0 0 12px #7ee787;
+}
+
+.stats {
+    display: flex;
+    border-top: 1px solid #26313c;
+    border-bottom: 1px solid #26313c;
+}
+
+.stats div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 18px 14px 0;
+    border-right: 1px solid #26313c;
+}
+
+.stats div:not(:first-child) {
+    padding-left: 18px;
+}
+
+.stats div:last-child {
+    border: 0;
+}
+
+.stats strong {
+    color: #e8edf2;
+    font:
+        26px 'DM Mono',
+        monospace;
+}
+
+.stats span {
+    color: #8793a1;
+    font:
+        10px 'DM Mono',
+        monospace;
+    letter-spacing: 0.1em;
+}

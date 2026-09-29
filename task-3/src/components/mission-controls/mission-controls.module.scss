@@ -1,0 +1,72 @@
+.root {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 18px;
+    padding: 28px 0;
+    border-bottom: 1px solid #26313c;
+}
+
+.filters {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.filters button,
+.reverse,
+.form button {
+    border: 1px solid #33414e;
+    background: #111820;
+    color: #8793a1;
+    padding: 10px 13px;
+    font:
+        11px 'DM Mono',
+        monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.filters button:hover,
+.reverse:hover,
+.form button:hover {
+    border-color: #79c0ff;
+    color: #e8edf2;
+}
+
+.filters .selected {
+    border-color: #79c0ff;
+    color: #79c0ff;
+    background: #142432;
+}
+
+.reverse {
+    color: #f2cc60;
+    border-color: #62542d;
+}
+
+.form {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1.4fr 1.2fr 140px auto;
+    gap: 8px;
+}
+
+.form input,
+.form select {
+    min-width: 0;
+    border: 1px solid #26313c;
+    background: #0e141b;
+    color: #e8edf2;
+    padding: 11px 12px;
+    outline: none;
+}
+
+.form input:focus,
+.form select:focus {
+    border-color: #79c0ff;
+}
+
+.form button {
+    color: #7ee787;
+    border-color: #3d6b48;
+}
