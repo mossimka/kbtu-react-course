@@ -74,7 +74,7 @@ npm run build
 
 ## Deployment
 
-The project is configured for GitHub Pages deployment with `gh-pages`:
+The project is configured for GitHub Pages deployment with `gh-pages`. The Vite base path matches this repository, so build assets resolve from `/kbtu-react-course/`:
 
 ```bash
 npm run deploy

@@ -1,57 +1,48 @@
+@use '../../styles/tokens' as *;
+
 .card {
     min-width: 0;
     padding: 20px;
-    border: 1px solid #26313c;
-    background: rgba(17, 24, 32, 0.94);
+    border: 1px solid $line;
+    background: rgba($panel, 0.94);
 }
-
 .card:hover {
-    border-color: #405467;
+    border-color: $line-hover;
 }
-
 .cardHeader {
     display: grid;
     grid-template-columns: 38px 1fr auto 20px;
     gap: 10px;
     align-items: start;
     padding-bottom: 22px;
-    border-bottom: 1px solid #26313c;
+    border-bottom: 1px solid $line;
 }
-
 .missionIcon {
     display: grid;
     width: 38px;
     height: 38px;
     place-items: center;
-    border: 1px solid #405467;
-    color: #f2cc60;
+    border: 1px solid $line-hover;
+    color: $yellow;
     font-size: 18px;
 }
-
 h2 {
     margin: 0;
     font-size: 17px;
     text-transform: uppercase;
     font-weight: 600;
 }
-
 .cardHeader p {
     margin: 4px 0 0;
-    color: #8793a1;
-    font:
-        11px 'DM Mono',
-        monospace;
+    color: $muted;
+    @include mono-label($label-size);
 }
-
 .status {
     white-space: nowrap;
-    color: #7ee787;
-    font:
-        10px 'DM Mono',
-        monospace;
+    color: $green;
+    @include mono-label($small-size);
     text-transform: uppercase;
 }
-
 .status i {
     display: inline-block;
     width: 6px;
@@ -60,155 +51,118 @@ h2 {
     border-radius: 50%;
     background: currentColor;
 }
-
 .paused {
-    color: #f2cc60;
+    color: $yellow;
 }
-
 .completed {
-    color: #79c0ff;
+    color: $blue;
 }
-
 .delete {
     border: 0;
     background: transparent;
-    color: #8793a1;
+    color: $muted;
     font-size: 22px;
     line-height: 14px;
 }
-
 .delete:hover {
-    color: #ff7b72;
+    color: $red;
 }
-
 .details {
     display: grid;
     grid-template-columns: 1.5fr 0.7fr 1fr;
     gap: 12px;
     padding: 20px 0;
 }
-
 .details div,
 .fuel > div:first-child {
     display: flex;
     flex-direction: column;
     gap: 7px;
 }
-
 .details span,
 .fuel span,
 .checks span {
-    color: #8793a1;
-    font:
-        10px 'DM Mono',
-        monospace;
+    color: $muted;
+    @include mono-label($small-size);
 }
-
 .details strong {
     overflow-wrap: anywhere;
-    font:
-        12px 'DM Mono',
-        monospace;
+    @include mono-label(12px);
     text-transform: uppercase;
 }
-
 .critical {
-    color: #ff7b72;
+    color: $red;
 }
-
 .high {
-    color: #f2cc60;
+    color: $yellow;
 }
-
 .medium {
-    color: #79c0ff;
+    color: $blue;
 }
-
 .low {
-    color: #8793a1;
+    color: $muted;
 }
-
 .fuel {
-    border-top: 1px solid #26313c;
+    border-top: 1px solid $line;
     padding: 18px 0 16px;
 }
-
 .fuel > div:first-child {
     flex-direction: row;
     justify-content: space-between;
 }
-
 .fuel strong,
 .checks strong {
-    color: #e8edf2;
-    font:
-        12px 'DM Mono',
-        monospace;
+    color: $text;
+    @include mono-label(12px);
 }
-
 .bar {
     height: 6px;
     margin-top: 11px;
-    background: #26313c;
+    background: $line;
 }
-
 .bar span {
     display: block;
     height: 100%;
-    background: #7ee787;
-    transition: width 0.2s ease;
+    background: $green;
+    transition: width $transition;
 }
-
 .warning {
     display: block;
     margin-top: 8px;
-    color: #ff7b72;
-    font:
-        10px 'DM Mono',
-        monospace;
+    color: $red;
+    @include mono-label($small-size);
 }
-
 .checks {
     display: flex;
     justify-content: space-between;
     padding: 4px 0 20px;
 }
-
 .actions {
     display: flex;
     gap: 7px;
     flex-wrap: wrap;
 }
-
 .actions button {
-    border: 1px solid #405467;
+    border: 1px solid $line-hover;
     background: transparent;
-    color: #e8edf2;
+    color: $text;
     padding: 9px 10px;
-    font:
-        10px 'DM Mono',
-        monospace;
+    @include mono-label($small-size);
 }
-
 .actions button:hover:not(:disabled) {
-    border-color: #7ee787;
-    color: #7ee787;
+    border-color: $green;
+    color: $green;
 }
-
 .actions button:disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }
-
 .actions .reset {
-    color: #8793a1;
-    border-color: #26313c;
+    color: $muted;
+    border-color: $line;
 }
-
 .complete {
     padding: 9px 0;
-    color: #79c0ff;
-    font:
-        10px 'DM Mono',
-        monospace;
+    color: $blue;
+    @include mono-label($small-size);
 }

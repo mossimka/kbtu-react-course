@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import type { SubmitEvent } from 'react';
 import type { MissionPriority } from '../../data/missions';
+import { DEFAULT_PRIORITY, FILTER_OPTIONS } from '../../config/mission.config';
+import type { MissionFilter } from '../../config/mission.config';
 import styles from './mission-controls.module.scss';
 
 type MissionControlsProps = {
-    filter: string;
-    onFilterChange: (filter: string) => void;
+    filter: MissionFilter;
+    onFilterChange: (filter: MissionFilter) => void;
     reverse: boolean;
     onReverse: () => void;
     onAdd: (name: string, destination: string, priority: MissionPriority) => void;
@@ -14,7 +16,7 @@ type MissionControlsProps = {
 export const MissionControls = ({ filter, onFilterChange, reverse, onReverse, onAdd }: MissionControlsProps) => {
     const [name, setName] = useState('');
     const [destination, setDestination] = useState('');
-    const [priority, setPriority] = useState<MissionPriority>('medium');
+    const [priority, setPriority] = useState<MissionPriority>(DEFAULT_PRIORITY);
 
     const submit = (event: SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -27,7 +29,7 @@ export const MissionControls = ({ filter, onFilterChange, reverse, onReverse, on
     return (
         <section className={styles.root}>
             <div className={styles.filters}>
-                {['all', 'active', 'completed', 'critical'].map((option) => (
+                {FILTER_OPTIONS.map((option) => (
                     <button
                         className={filter === option ? styles.selected : ''}
                         key={option}

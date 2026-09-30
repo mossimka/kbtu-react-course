@@ -1,24 +1,23 @@
+@use '../../styles/tokens' as *;
+
 .toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 28px 0 16px;
-    color: #8793a1;
-    font:
-        11px 'DM Mono',
-        monospace;
-    letter-spacing: 0.06em;
+    color: $muted;
+    @include mono-label($label-size, 0.06em);
 }
 
 .toolbar button {
     border: 0;
     background: transparent;
-    color: #8793a1;
+    color: $muted;
     font: inherit;
 }
 
 .toolbar button:hover {
-    color: #f2cc60;
+    color: $yellow;
 }
 
 .grid {

@@ -1,14 +1,14 @@
+@use '../../styles/tokens' as *;
+
 .root {
     padding: 72px 20px;
-    border: 1px dashed #405467;
+    border: 1px dashed $line-hover;
     text-align: center;
 }
 
 .root span {
-    color: #79c0ff;
-    font:
-        32px 'DM Mono',
-        monospace;
+    color: $blue;
+    @include mono-label(32px);
 }
 
 .root h2 {
@@ -17,8 +17,6 @@
 
 .root p {
     margin: 0;
-    color: #8793a1;
-    font:
-        12px 'DM Mono',
-        monospace;
+    color: $muted;
+    @include mono-label(12px);
 }

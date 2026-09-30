@@ -15,7 +15,7 @@ export const MissionList = ({ missions, resetVersion, onResetAll, onDelete, onSt
     <>
         <div className={styles.toolbar}>
             <span>FLIGHT MANIFEST / {missions.length} VISIBLE</span>
-            <button onClick={onResetAll}>↻ RESET ALL SYSTEMS</button>
+            <button onClick={onResetAll}>RESET ALL SYSTEMS</button>
         </div>
         {missions.length ? (
             <div className={styles.grid}>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Mission } from '../../data/missions';
+import { FUEL, INITIAL_CHECKS, STATUS } from '../../config/mission.config';
 import styles from './mission-card.module.scss';
 
 type MissionCardProps = {
@@ -9,14 +10,21 @@ type MissionCardProps = {
 };
 
 export const MissionCard = ({ mission, onDelete, onStatusChange }: MissionCardProps) => {
-    const [fuel, setFuel] = useState(100);
-    const [checks, setChecks] = useState(0);
+    const [fuel, setFuel] = useState<number>(FUEL.MAX);
+    const [checks, setChecks] = useState(INITIAL_CHECKS);
+
     console.log(`MissionCard rendered: ${mission.name}`);
 
     const runCheck = () => {
-        setFuel((current) => Math.max(0, current - 5));
+        setFuel((current) => Math.max(FUEL.MIN, current - FUEL.COST_PER_CHECK));
         setChecks((current) => current + 1);
     };
+
+    const resetSystem = () => {
+        setFuel(FUEL.MAX);
+        setChecks(INITIAL_CHECKS);
+    };
+
     return (
         <article className={styles.card}>
             <div className={styles.cardHeader}>
@@ -27,6 +35,7 @@ export const MissionCard = ({ mission, onDelete, onStatusChange }: MissionCardPr
                     <h2>{mission.name}</h2>
                     <p>{mission.type}</p>
                 </div>
+
                 <span className={`${styles.status} ${styles[mission.status]}`}>
                     <i /> {mission.status}
                 </span>
@@ -49,6 +58,7 @@ export const MissionCard = ({ mission, onDelete, onStatusChange }: MissionCardPr
                 </div>
                 <div>
                     <span>PRIORITY</span>
+
                     <strong className={styles[mission.priority]}>{mission.priority}</strong>
                 </div>
             </div>
@@ -60,28 +70,22 @@ export const MissionCard = ({ mission, onDelete, onStatusChange }: MissionCardPr
                 <div className={styles.bar}>
                     <span style={{ width: `${fuel}%` }} />
                 </div>
-                {fuel <= 20 && <small className={styles.warning}>LOW FUEL</small>}
+                {fuel <= FUEL.LOW_THRESHOLD && <small className={styles.warning}>LOW FUEL</small>}
             </div>
             <div className={styles.checks}>
                 <span>SYSTEM CHECKS</span>
                 <strong>{checks}</strong>
             </div>
             <div className={styles.actions}>
-                <button onClick={runCheck} disabled={fuel === 0}>
+                <button onClick={runCheck} disabled={fuel === FUEL.MIN}>
                     RUN SYSTEM CHECK
                 </button>
-                {mission.status === 'completed' ? (
+                {mission.status === STATUS.COMPLETED ? (
                     <span className={styles.complete}>MISSION COMPLETE</span>
                 ) : (
-                    <button onClick={() => onStatusChange(mission.id, 'completed')}>MARK COMPLETE</button>
+                    <button onClick={() => onStatusChange(mission.id, STATUS.COMPLETED)}>MARK COMPLETE</button>
                 )}
-                <button
-                    className={styles.reset}
-                    onClick={() => {
-                        setFuel(100);
-                        setChecks(0);
-                    }}
-                >
+                <button className={styles.reset} onClick={resetSystem}>
                     RESET SYSTEM
                 </button>
             </div>

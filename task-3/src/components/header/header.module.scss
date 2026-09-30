@@ -1,3 +1,5 @@
+@use '../../styles/tokens' as *;
+
 .root {
     max-width: 1240px;
     margin: 0 auto;
@@ -8,12 +10,9 @@
     display: flex;
     justify-content: space-between;
     padding-bottom: 16px;
-    border-bottom: 1px solid #26313c;
-    color: #8793a1;
-    font:
-        11px 'DM Mono',
-        monospace;
-    letter-spacing: 0.08em;
+    border-bottom: 1px solid $line;
+    color: $muted;
+    @include mono-label($label-size, 0.08em);
 }
 
 .heading {
@@ -25,11 +24,8 @@
 
 .eyebrow {
     margin: 0 0 12px;
-    color: #79c0ff;
-    font:
-        11px 'DM Mono',
-        monospace;
-    letter-spacing: 0.12em;
+    color: $blue;
+    @include mono-label($label-size, 0.12em);
 }
 
 h1 {
@@ -42,11 +38,8 @@ h1 {
 }
 
 .signal {
-    color: #7ee787;
-    font:
-        11px 'DM Mono',
-        monospace;
-    letter-spacing: 0.06em;
+    color: $green;
+    @include mono-label($label-size, 0.06em);
 }
 
 .dot {
@@ -55,14 +48,14 @@ h1 {
     height: 7px;
     margin-right: 7px;
     border-radius: 50%;
-    background: #7ee787;
-    box-shadow: 0 0 12px #7ee787;
+    background: $green;
+    box-shadow: 0 0 12px $green;
 }
 
 .stats {
     display: flex;
-    border-top: 1px solid #26313c;
-    border-bottom: 1px solid #26313c;
+    border-top: 1px solid $line;
+    border-bottom: 1px solid $line;
 }
 
 .stats div {
@@ -71,7 +64,7 @@ h1 {
     flex-direction: column;
     gap: 6px;
     padding: 16px 18px 14px 0;
-    border-right: 1px solid #26313c;
+    border-right: 1px solid $line;
 }
 
 .stats div:not(:first-child) {
@@ -83,16 +76,11 @@ h1 {
 }
 
 .stats strong {
-    color: #e8edf2;
-    font:
-        26px 'DM Mono',
-        monospace;
+    color: $text;
+    @include mono-label(26px);
 }
 
 .stats span {
-    color: #8793a1;
-    font:
-        10px 'DM Mono',
-        monospace;
-    letter-spacing: 0.1em;
+    color: $muted;
+    @include mono-label($small-size, 0.1em);
 }

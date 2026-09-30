@@ -1,8 +1,10 @@
+@use './styles/tokens' as *;
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 :root {
-    font-family: 'Space Grotesk', sans-serif;
-    color: #e8edf2;
-    background: #0b0f14;
+    font-family: $display;
+    color: $text;
+    background: $background;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
 }
@@ -15,7 +17,7 @@ html {
 body {
     margin: 0;
     min-width: 320px;
-    background: #0b0f14;
+    background: $background;
 }
 a {
     color: inherit;
@@ -32,9 +34,9 @@ button {
 .dashboard-shell {
     min-height: 100vh;
     background:
-        linear-gradient(rgba(11, 15, 20, 0.92), rgba(11, 15, 20, 0.98)),
-        linear-gradient(90deg, rgba(121, 192, 255, 0.035) 1px, transparent 1px),
-        linear-gradient(rgba(121, 192, 255, 0.035) 1px, transparent 1px);
+        linear-gradient(rgba($background, 0.92), rgba($background, 0.98)),
+        linear-gradient(90deg, rgba($blue, 0.035) 1px, transparent 1px),
+        linear-gradient(rgba($blue, 0.035) 1px, transparent 1px);
     background-size:
         auto,
         42px 42px,
@@ -45,7 +47,7 @@ button {
     margin: 0 auto;
     padding: 0 32px 64px;
 }
-@media (max-width: 700px) {
+@media (max-width: $mobile-breakpoint) {
     .dashboard-content {
         padding: 0 18px 40px;
     }
