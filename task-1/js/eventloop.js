@@ -115,7 +115,11 @@ runDemoBtn.addEventListener("click", () => {
         push("Async function start");
 
         await null;
-
+        new Promise((resolve) => {
+            resolve();
+        }).then(() => {
+            push("Async function after await 2");
+        });
         push("Async function after await");
     }
 });
