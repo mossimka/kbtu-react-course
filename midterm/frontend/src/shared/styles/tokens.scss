@@ -1,0 +1,40 @@
+$background: #0b0f14;
+$panel: #111820;
+$input-background: #0e141b;
+$selected-background: #142432;
+$text: #e8edf2;
+$muted: #8793a1;
+$line: #26313c;
+$line-strong: #33414e;
+$line-hover: #405467;
+$blue: #79c0ff;
+$green: #7ee787;
+$yellow: #f2cc60;
+$red: #ff7b72;
+$green-border: #3d6b48;
+$yellow-border: #62542d;
+
+$mono: 'DM Mono', monospace;
+$display: 'Space Grotesk', sans-serif;
+$small-size: 10px;
+$label-size: 11px;
+$transition: 0.2s ease;
+$mobile-breakpoint: 700px;
+
+@mixin mono-label($size: $label-size, $spacing: 0) {
+    font: $size $mono;
+    letter-spacing: $spacing;
+}
+
+@mixin control {
+    border: 1px solid $line-strong;
+    background: $panel;
+    color: $muted;
+    @include mono-label($label-size, 0.05em);
+    text-transform: uppercase;
+}
+
+@mixin interactive-control {
+    border-color: $blue;
+    color: $text;
+}

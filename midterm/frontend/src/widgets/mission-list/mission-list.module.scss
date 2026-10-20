@@ -1,0 +1,27 @@
+@use '../../shared/styles/tokens' as *;
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 0 16px;
+    color: $muted;
+    @include mono-label($label-size, 0.06em);
+}
+
+.toolbar button {
+    border: 0;
+    background: transparent;
+    color: $muted;
+    font: inherit;
+}
+
+.toolbar button:hover {
+    color: $yellow;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}

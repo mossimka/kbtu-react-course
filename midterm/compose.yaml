@@ -5,12 +5,47 @@ services:
     container_name: mission-backend
     ports:
       - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/missions
+      SPRING_DATASOURCE_USERNAME: mission
+      SPRING_DATASOURCE_PASSWORD: mission
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: postgres:16-alpine
+    container_name: mission-database
+    environment:
+      POSTGRES_DB: missions
+      POSTGRES_USER: mission
+      POSTGRES_PASSWORD: mission
+    ports:
+      - "5432:5432"
+    volumes:
+      - mission-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mission -d missions"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   frontend:
-    build:
-      context: ./frontend
+    image: node:22-alpine
     container_name: mission-frontend
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    environment:
+      VITE_API_URL: http://localhost:8080
+    volumes:
+      - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
     ports:
       - "5173:5173"
     depends_on:
       - backend
+
+volumes:
+  mission-db-data:
+  frontend-node-modules:

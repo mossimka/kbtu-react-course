@@ -1,0 +1,21 @@
+{
+    "extends": ["stylelint-config-recommended", "stylelint-config-recommended-scss", "stylelint-config-rational-order"],
+    "plugins": ["stylelint-order", "stylelint-config-rational-order/plugin"],
+    "customSyntax": "postcss-scss",
+    "rules": {
+        "color-hex-length": "long",
+        "no-descending-specificity": null,
+        "selector-pseudo-class-no-unknown": [
+            true,
+            {
+                "ignorePseudoClasses": ["global", "local"]
+            }
+        ],
+        "property-no-unknown": [
+            true,
+            {
+                "ignoreProperties": ["composes"]
+            }
+        ]
+    }
+}

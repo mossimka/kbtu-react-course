@@ -1,0 +1,25 @@
+@use '../../styles/tokens' as *;
+
+.root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 28px 0 8px;
+    color: $muted;
+    @include mono-label(11px, 0.05em);
+}
+
+.root button {
+    @include control;
+    padding: 10px 13px;
+}
+
+.root button:not(:disabled):hover {
+    @include interactive-control;
+}
+
+.root button:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
