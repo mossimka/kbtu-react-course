@@ -10,6 +10,7 @@ services:
       SPRING_DATASOURCE_USERNAME: mission
       SPRING_DATASOURCE_PASSWORD: mission
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      CORS_ALLOWED_ORIGIN_PATTERNS: http://localhost:5173
     depends_on:
       database:
         condition: service_healthy
