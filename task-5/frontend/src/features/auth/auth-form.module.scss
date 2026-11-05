@@ -1,0 +1,166 @@
+@use '../../shared/styles/tokens' as *;
+
+.page {
+    display: grid;
+    grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+    gap: 24px;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 64px 32px 80px;
+}
+
+.card {
+    padding: 34px;
+    border: 1px solid $line;
+    background: rgba($panel, 0.85);
+    box-shadow: 0 24px 60px rgba(#000, 0.25);
+}
+
+.eyebrow {
+    margin: 0 0 14px;
+    color: $blue;
+    @include mono-label($small-size, 0.12em);
+}
+
+.card h1 {
+    margin: 0;
+    font-size: clamp(34px, 5vw, 52px);
+    text-transform: uppercase;
+}
+
+.lead {
+    margin: 16px 0 26px;
+    color: $muted;
+    line-height: 1.65;
+}
+
+.form {
+    display: grid;
+    gap: 16px;
+}
+
+.form label {
+    display: grid;
+    gap: 8px;
+    color: $muted;
+    @include mono-label($small-size, 0.08em);
+    text-transform: uppercase;
+}
+
+.form input {
+    width: 100%;
+    border: 1px solid $line-strong;
+    padding: 12px;
+    background: $input-background;
+    color: $text;
+    outline: none;
+}
+
+.form input:focus {
+    border-color: $blue;
+    background: $selected-background;
+}
+
+.form button {
+    margin-top: 6px;
+    border: 1px solid $green-border;
+    padding: 13px 18px;
+    background: rgba($green, 0.06);
+    color: $green;
+    @include mono-label($label-size, 0.06em);
+    text-transform: uppercase;
+}
+
+.form button:hover:not(:disabled) {
+    border-color: $green;
+    background: rgba($green, 0.14);
+}
+
+.form button:disabled {
+    cursor: wait;
+    opacity: 0.55;
+}
+
+.error {
+    margin: 0;
+    padding: 12px 14px;
+    border: 1px solid rgba($red, 0.45);
+    color: $red;
+    @include mono-label(11px, 0.03em);
+}
+
+.switch {
+    margin: 18px 0 0;
+    color: $muted;
+    font-size: 14px;
+}
+
+.switch a {
+    color: $blue;
+}
+
+.switch a:hover {
+    color: $text;
+}
+
+.links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 22px 0 0;
+    padding-top: 18px;
+    border-top: 1px solid $line;
+    color: $blue;
+    @include mono-label($label-size, 0.04em);
+}
+
+.links a:hover {
+    color: $text;
+}
+
+.aside {
+    display: grid;
+    place-content: center;
+    gap: 16px;
+    min-height: 320px;
+    padding: 32px;
+    border: 1px dashed $line-hover;
+    color: $muted;
+    text-align: center;
+    @include mono-label($small-size, 0.12em);
+}
+
+.badge {
+    display: grid;
+    width: 72px;
+    height: 72px;
+    margin: 0 auto;
+    place-items: center;
+    border: 1px solid $line-hover;
+    border-radius: 50%;
+    color: $yellow;
+    font-size: 30px;
+    box-shadow: 0 0 40px rgba($yellow, 0.15);
+}
+
+.aside p {
+    margin: 0;
+    color: $text;
+    @include mono-label(13px, 0.16em);
+}
+
+@media (max-width: $mobile-breakpoint) {
+    .page {
+        grid-template-columns: 1fr;
+        padding: 36px 18px 52px;
+    }
+
+    .card {
+        padding: 24px;
+    }
+
+    .aside {
+        display: none;
+    }
+}

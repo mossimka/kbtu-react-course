@@ -1,4 +1,5 @@
 import type { ListItem } from '../types';
+import './resource-list.component.css';
 
 type ResourceListProps = {
     items: ListItem[];

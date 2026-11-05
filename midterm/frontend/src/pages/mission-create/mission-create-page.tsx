@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SyntheticEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createMission } from '../../entities/mission/api/mission.api';
 import type { MissionInput, MissionPriority } from '../../entities/mission/model/types';
@@ -25,7 +25,7 @@ export function MissionCreatePage() {
         setForm((current) => ({ ...current, [key]: value }));
     };
 
-    const submit = async (event: FormEvent<HTMLFormElement>) => {
+    const submit = async (event: SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault();
         setSaving(true);
         setError(null);

@@ -1,4 +1,5 @@
 import type { Item } from '../types';
+import './item-details.component.css';
 
 type ItemDetailsProps = {
     details: Item | null;

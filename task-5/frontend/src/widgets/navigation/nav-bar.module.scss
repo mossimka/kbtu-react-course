@@ -1,0 +1,113 @@
+@use '../../shared/styles/tokens' as *;
+
+.root {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 32px;
+    border-bottom: 1px solid $line;
+    background: rgba($background, 0.92);
+    backdrop-filter: blur(10px);
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: $text;
+    @include mono-label(13px, 0.14em);
+    text-transform: uppercase;
+}
+
+.brand small {
+    display: block;
+    margin-top: 3px;
+    color: $muted;
+    font-size: $small-size;
+    letter-spacing: 0.08em;
+}
+
+.mark {
+    display: grid;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    border: 1px solid $line-hover;
+    color: $yellow;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.link {
+    padding: 9px 12px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: $muted;
+    cursor: pointer;
+    @include mono-label($label-size, 0.06em);
+    text-transform: uppercase;
+    transition:
+        color $transition,
+        border-color $transition,
+        background $transition;
+}
+
+.link:hover {
+    color: $text;
+    border-color: $line-strong;
+}
+
+.active {
+    color: $blue;
+    border-color: $blue;
+    background: rgba($blue, 0.08);
+}
+
+.logout {
+    color: $muted;
+}
+
+.logout:hover {
+    color: $red;
+    border-color: rgba($red, 0.45);
+}
+
+.signup {
+    color: $green;
+    border-color: $green-border;
+}
+
+.signup:hover {
+    color: $green;
+    border-color: $green;
+    background: rgba($green, 0.08);
+}
+
+@media (max-width: $mobile-breakpoint) {
+    .root {
+        position: static;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 18px;
+    }
+
+    .nav {
+        width: 100%;
+    }
+
+    .link {
+        flex: 1;
+        min-width: fit-content;
+        text-align: center;
+        padding: 8px 9px;
+    }
+}

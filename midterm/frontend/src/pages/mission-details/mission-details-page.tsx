@@ -1,8 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { getMission } from '../../entities/mission/api/mission.api';
-import type { Mission } from '../../entities/mission/model/types';
-import { ErrorState, LoadingState } from '../../shared/ui/request-state/request-state';
+import { getMission, updateMission } from '../../entities/mission/api/mission.api';
+import type { Mission, MissionInput, MissionPriority, MissionStatus } from '../../entities/mission/model/types';
+import { ErrorState, LoadingState, SuccessState } from '../../shared/ui/request-state/request-state';
+
+const toMissionInput = (mission: Mission): MissionInput => ({
+    name: mission.name,
+    destination: mission.destination,
+    type: mission.type,
+    status: mission.status,
+    priority: mission.priority,
+    crew: mission.crew,
+    description: mission.description ?? '',
+    launchDate: mission.launchDate ?? '',
+});
 
 export function MissionDetailsPage() {
     const { id } = useParams();
@@ -10,12 +21,21 @@ export function MissionDetailsPage() {
     const [mission, setMission] = useState<Mission | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [editing, setEditing] = useState(false);
+    const [form, setForm] = useState<MissionInput | null>(null);
+    const [saving, setSaving] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
+    const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
     useEffect(() => {
         const controller = new AbortController();
         setLoading(true);
         void getMission(Number(id), controller.signal)
-            .then(setMission)
+            .then((loadedMission) => {
+                setMission(loadedMission);
+                setForm(toMissionInput(loadedMission));
+                setError(null);
+            })
             .catch((requestError: unknown) => {
                 if (!(requestError instanceof DOMException && requestError.name === 'AbortError')) {
                     setError('Mission details could not be loaded.');
@@ -27,24 +47,196 @@ export function MissionDetailsPage() {
         return () => controller.abort();
     }, [id]);
 
-    if (loading) return <main className='dashboard-shell'><section className='dashboard-content'><LoadingState /></section></main>;
-    if (error || !mission) return <main className='dashboard-shell'><section className='dashboard-content'><ErrorState message={error ?? 'Mission not found.'} onRetry={() => navigate(0)} /></section></main>;
+    const update = <K extends keyof MissionInput>(key: K, value: MissionInput[K]) => {
+        setForm((current) => (current ? { ...current, [key]: value } : current));
+    };
+
+    const cancelEditing = () => {
+        if (mission) setForm(toMissionInput(mission));
+        setSaveError(null);
+        setEditing(false);
+    };
+
+    const submit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (!mission || !form) return;
+
+        setSaving(true);
+        setSaveError(null);
+        setSaveMessage(null);
+        try {
+            const updatedMission = await updateMission(mission.id, form);
+            setMission(updatedMission);
+            setForm(toMissionInput(updatedMission));
+            setEditing(false);
+            setSaveMessage('Mission details updated successfully.');
+        } catch {
+            setSaveError('Mission update failed. Check the fields and try again.');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    if (loading)
+        return (
+            <main className='dashboard-shell'>
+                <section className='dashboard-content'>
+                    <LoadingState />
+                </section>
+            </main>
+        );
+    if (error || !mission)
+        return (
+            <main className='dashboard-shell'>
+                <section className='dashboard-content'>
+                    <ErrorState message={error ?? 'Mission not found.'} onRetry={() => navigate(0)} />
+                </section>
+            </main>
+        );
 
     return (
         <main className='dashboard-shell'>
             <section className='dashboard-content detail-page'>
-                <Link to='/' className='back-link'>← BACK TO MANIFEST</Link>
+                <Link to='/' className='back-link'>
+                    ← BACK TO MANIFEST
+                </Link>
                 <p className='eyebrow'>MISSION RECORD / #{mission.id}</p>
-                <h1>{mission.name}</h1>
-                <div className='detail-grid'>
-                    <div><span>DESTINATION</span><strong>{mission.destination}</strong></div>
-                    <div><span>TYPE</span><strong>{mission.type}</strong></div>
-                    <div><span>STATUS</span><strong>{mission.status}</strong></div>
-                    <div><span>PRIORITY</span><strong>{mission.priority}</strong></div>
-                    <div><span>CREW</span><strong>{mission.crew}</strong></div>
-                    <div><span>LAUNCH DATE</span><strong>{mission.launchDate ?? '—'}</strong></div>
-                </div>
-                <p className='description'>{mission.description || 'No mission briefing was provided.'}</p>
+                {saveMessage && <SuccessState message={saveMessage} />}
+                {saveError && <ErrorState message={saveError} onRetry={() => setSaveError(null)} />}
+                {editing && form ? (
+                    <form className='mission-form detail-form' onSubmit={submit}>
+                        <label>
+                            Mission name
+                            <input
+                                required
+                                minLength={3}
+                                value={form.name}
+                                onChange={(event) => update('name', event.target.value)}
+                            />
+                        </label>
+                        <label>
+                            Destination
+                            <input
+                                required
+                                value={form.destination}
+                                onChange={(event) => update('destination', event.target.value)}
+                            />
+                        </label>
+                        <label>
+                            Mission type
+                            <input
+                                required
+                                value={form.type}
+                                onChange={(event) => update('type', event.target.value)}
+                            />
+                        </label>
+                        <label>
+                            Launch date
+                            <input
+                                required
+                                type='date'
+                                value={form.launchDate}
+                                onChange={(event) => update('launchDate', event.target.value)}
+                            />
+                        </label>
+                        <label>
+                            Status
+                            <select
+                                value={form.status}
+                                onChange={(event) => update('status', event.target.value as MissionStatus)}
+                            >
+                                <option value='active'>Active</option>
+                                <option value='completed'>Completed</option>
+                            </select>
+                        </label>
+                        <label>
+                            Priority
+                            <select
+                                value={form.priority}
+                                onChange={(event) => update('priority', event.target.value as MissionPriority)}
+                            >
+                                <option value='critical'>Critical</option>
+                                <option value='high'>High</option>
+                                <option value='medium'>Medium</option>
+                                <option value='low'>Low</option>
+                            </select>
+                        </label>
+                        <label>
+                            Crew size
+                            <input
+                                required
+                                type='number'
+                                min='1'
+                                max='20'
+                                value={form.crew}
+                                onChange={(event) => update('crew', Number(event.target.value))}
+                            />
+                        </label>
+                        <label className='wide'>
+                            Description
+                            <textarea
+                                rows={5}
+                                value={form.description}
+                                onChange={(event) => update('description', event.target.value)}
+                            />
+                        </label>
+                        <div className='form-actions'>
+                            <button disabled={saving} type='submit'>
+                                {saving ? 'SAVING...' : 'SAVE CHANGES'}
+                            </button>
+                            <button
+                                className='secondary-action'
+                                disabled={saving}
+                                type='button'
+                                onClick={cancelEditing}
+                            >
+                                CANCEL
+                            </button>
+                        </div>
+                    </form>
+                ) : (
+                    <>
+                        <div className='detail-heading'>
+                            <h1>{mission.name}</h1>
+                            <button
+                                type='button'
+                                onClick={() => {
+                                    setSaveMessage(null);
+                                    setEditing(true);
+                                }}
+                            >
+                                EDIT MISSION
+                            </button>
+                        </div>
+                        <div className='detail-grid'>
+                            <div>
+                                <span>DESTINATION</span>
+                                <strong>{mission.destination}</strong>
+                            </div>
+                            <div>
+                                <span>TYPE</span>
+                                <strong>{mission.type}</strong>
+                            </div>
+                            <div>
+                                <span>STATUS</span>
+                                <strong>{mission.status}</strong>
+                            </div>
+                            <div>
+                                <span>PRIORITY</span>
+                                <strong>{mission.priority}</strong>
+                            </div>
+                            <div>
+                                <span>CREW</span>
+                                <strong>{mission.crew}</strong>
+                            </div>
+                            <div>
+                                <span>LAUNCH DATE</span>
+                                <strong>{mission.launchDate ?? '—'}</strong>
+                            </div>
+                        </div>
+                        <p className='description'>{mission.description || 'No mission briefing was provided.'}</p>
+                    </>
+                )}
             </section>
         </main>
     );

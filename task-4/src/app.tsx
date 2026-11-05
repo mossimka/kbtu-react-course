@@ -1,28 +1,39 @@
 import { useEffect, useState } from 'react';
-import type { FormEvent } from 'react';
-import { createItem, getItem, listItems, removeItem as removeStoredItem, updateItem } from './api';
-import { ItemDetails } from './components/ItemDetails';
-import { ItemForm } from './components/ItemForm';
-import { ResourceList } from './components/ResourceList';
+import { getItem, listItems } from './api';
+import { createAppHandlers } from './app-handlers';
+import { ItemDetails } from './components/item-details.component';
+import { ItemForm } from './components/item-form.component';
+import { ResourceList } from './components/resource-list.component';
 import type { Item, ItemDraft, ListItem } from './types';
 import { emptyDraft } from './types';
-import './App.css';
+import './app.css';
 
 function App() {
     const [items, setItems] = useState<ListItem[]>([]);
+
     const [selectedId, setSelectedId] = useState<string | null>(null);
+
     const [details, setDetails] = useState<Item | null>(null);
+
     const [listState, setListState] = useState<'loading' | 'success' | 'error'>('loading');
     const [detailsState, setDetailsState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
     const [error, setError] = useState('');
     const [detailsError, setDetailsError] = useState('');
+
     const [reloadKey, setReloadKey] = useState(0);
     const [detailsReloadKey, setDetailsReloadKey] = useState(0);
+
     const [editingId, setEditingId] = useState<string | null>(null);
+
     const [draft, setDraft] = useState<ItemDraft>(emptyDraft);
+
     const [saving, setSaving] = useState(false);
+
     const [removingId, setRemovingId] = useState<string | null>(null);
+
     const [completingId, setCompletingId] = useState<string | null>(null);
+
     const [notice, setNotice] = useState('');
 
     useEffect(() => {
@@ -67,98 +78,36 @@ function App() {
         };
     }, [selectedId, detailsReloadKey]);
 
-    const refresh = () => {
-        setNotice('');
-        setError('');
-        setListState('loading');
-        setReloadKey((key) => key + 1);
-    };
-    const selectItem = (id: string) => {
-        setNotice('');
-        setDetails(null);
-        setDetailsError('');
-        setDetailsState('loading');
-        setSelectedId(id);
-        setDetailsReloadKey((key) => key + 1);
-    };
-    const startCreate = () => {
-        setEditingId('new');
-        setDraft(emptyDraft);
-    };
-    const startEdit = () => {
-        if (details) {
-            setEditingId(details.id);
-            setDraft({
-                name: details.name,
-                category: details.category,
-                description: details.description,
-                status: details.status,
-                priority: details.priority,
-                owner: details.owner,
-                location: details.location,
-            });
-        }
-    };
-    const saveItem = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setSaving(true);
-        setNotice('');
-        const currentId = editingId;
-        const operation = currentId === 'new' ? createItem(draft) : updateItem(currentId!, draft);
-        operation
-            .then((saved) => {
-                setEditingId(null);
-                setSaving(false);
-                setNotice(currentId === 'new' ? 'Item created successfully.' : 'Item updated successfully.');
-                setSelectedId(saved.id);
-                setListState('loading');
-                setReloadKey((key) => key + 1);
-            })
-            .catch((reason: Error) => {
-                setSaving(false);
-                setError(reason.message);
-            });
-    };
-    const removeItem = (id: string) => {
-        if (!window.confirm('Remove this item?')) return;
-        setRemovingId(id);
-        setNotice('');
-        removeStoredItem(id)
-            .then(() => {
-                if (selectedId === id) {
-                    setSelectedId(null);
-                    setDetails(null);
-                    setDetailsState('idle');
-                }
-                setRemovingId(null);
-                setNotice('Item removed successfully.');
-                setListState('loading');
-                setReloadKey((key) => key + 1);
-            })
-            .catch((reason: Error) => {
-                setRemovingId(null);
-                setError(reason.message);
-            });
-    };
-    const completeItem = () => {
-        if (!selectedId || completingId) return;
-        const completionId = selectedId;
-        setCompletingId(completionId);
-        setNotice('');
-        updateItem(completionId, { status: 'Available' })
-            .then((updated) => {
-                setCompletingId(null);
-                setNotice(`"${updated.name}" is now available.`);
-                setItems((current) =>
-                    current.map((item) => (item.id === completionId ? { ...item, status: updated.status } : item)),
-                );
-                if (selectedId === completionId) setDetails(updated);
-            })
-            .catch((reason: Error) => {
-                setCompletingId(null);
-                setError(reason.message);
-            });
-    };
+    const {
+        refresh,
+        selectItem,
+        startCreate,
+        startEdit,
+        saveItem,
+        removeItem,
+        completeItem,
+    } = createAppHandlers({
+        selectedId,
+        details,
+        editingId,
+        draft,
+        completingId,
+        setNotice,
+        setError,
+        setListState,
+        setDetails,
+        setDetailsError,
+        setDetailsState,
+        setSelectedId,
+        setDetailsReloadKey,
+        setEditingId,
+        setDraft,
+        setSaving,
+        setRemovingId,
+        setCompletingId,
+        setItems,
+        setReloadKey,
+    });
 
     return (
         <main className='app-shell'>

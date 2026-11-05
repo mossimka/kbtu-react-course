@@ -10,6 +10,7 @@ React and TypeScript frontend for the Midterm Mission Control project. It consum
 - Server-side sorting and pagination
 - Mission list and detail views
 - Controlled form for creating missions
+- Editable mission details with save and cancel actions
 - Status updates and deletion
 - Responsive dark mission-control interface
 

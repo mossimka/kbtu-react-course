@@ -17,33 +17,38 @@ export function DashboardPage() {
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
 
-    const load = async (signal?: AbortSignal) => {
+    const load = async () => {
         setLoading(true);
         setError(null);
+
         try {
-            const result = await getMissions(
-                { search, status, priority, sortBy, sortDirection, page, size: 12 },
-                signal,
-            );
+            const result = await getMissions({
+                search,
+                status,
+                priority,
+                sortBy,
+                sortDirection,
+                page,
+                size: 12,
+            });
+
             setMissions(result.content);
             setTotalPages(result.totalPages);
             setTotalElements(result.totalElements);
-        } catch (requestError) {
-            if (requestError instanceof DOMException && requestError.name === 'AbortError') return;
+        } catch {
             setError('The API could not load the mission manifest.');
         } finally {
-            if (!signal?.aborted) setLoading(false);
+            setLoading(false);
         }
     };
 
     useEffect(() => {
-        const controller = new AbortController();
-        void load(controller.signal);
-        return () => controller.abort();
+        void load();
     }, [search, status, priority, sortBy, sortDirection, page]);
 
     useEffect(() => {

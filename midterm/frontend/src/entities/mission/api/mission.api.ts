@@ -82,6 +82,17 @@ export const createMission = (mission: MissionInput) =>
         }),
     }).then(normalizeMission);
 
+export const updateMission = (id: number, mission: MissionInput) =>
+    request<BackendMission>(`/api/missions/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            ...mission,
+            missionType: mission.type,
+            status: mission.status.toUpperCase(),
+            priority: mission.priority.toUpperCase(),
+        }),
+    }).then(normalizeMission);
+
 export const updateMissionStatus = (id: number, status: MissionStatus) =>
     request<BackendMission>(`/api/missions/${id}/status`, {
         method: 'PATCH',

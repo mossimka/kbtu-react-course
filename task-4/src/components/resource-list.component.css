@@ -1,0 +1,112 @@
+.list-panel {
+  border-right: 1px solid #e7eaf1;
+}
+
+.panel-heading {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 25px 22px 18px;
+}
+
+.count {
+  color: #929bae;
+  display: block;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.item-list {
+  padding: 0 10px 14px;
+}
+
+.item-row {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  display: flex;
+  gap: 12px;
+  padding: 13px 12px;
+  text-align: left;
+  width: 100%;
+}
+
+.item-row:hover {
+  background: #f4f6fc;
+}
+
+.item-row.selected {
+  background: #eef0ff;
+}
+
+.item-icon,
+.large-icon {
+  align-items: center;
+  background: #f0efff;
+  border-radius: 9px;
+  color: #5965d9;
+  display: flex;
+  flex: 0 0 38px;
+  font-family: "Space Grotesk";
+  font-weight: 700;
+  height: 38px;
+  justify-content: center;
+}
+
+.item-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.item-copy strong {
+  color: #263148;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.item-copy small {
+  color: #929bae;
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.status-dot {
+  border-radius: 50%;
+  height: 8px;
+  width: 8px;
+}
+
+.status-dot.available {
+  background: #41b878;
+}
+
+.status-dot.in-use {
+  background: #e9a33e;
+}
+
+.status-dot.maintenance {
+  background: #d26a77;
+}
+
+@media (max-width: 760px) {
+  .list-panel {
+    border-bottom: 1px solid #e7eaf1;
+    border-right: 0;
+  }
+
+  .item-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .item-list {
+    grid-template-columns: 1fr;
+  }
+}

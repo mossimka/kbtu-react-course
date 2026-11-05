@@ -1,0 +1,59 @@
+@use '../../shared/styles/tokens' as *;
+
+.root {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 18px;
+    padding: 28px 0;
+    border-bottom: 1px solid $line;
+}
+
+.filters {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.filters button,
+.create {
+    @include control;
+    padding: 10px 13px;
+}
+
+.filters button:hover,
+.create:hover {
+    @include interactive-control;
+}
+
+.filters input,
+.filters select {
+    min-width: 0;
+    max-width: 220px;
+    border: 1px solid $line;
+    background: $input-background;
+    color: $text;
+    padding: 11px 12px;
+    outline: none;
+}
+
+.filters input:focus,
+.filters select:focus {
+    border-color: $blue;
+}
+
+.create {
+    display: inline-flex;
+    align-items: center;
+    color: $green;
+    border-color: $green-border;
+}
+
+@media (max-width: $mobile-breakpoint) {
+    .root {
+        grid-template-columns: 1fr;
+    }
+
+    .create {
+        justify-content: center;
+    }
+}

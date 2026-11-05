@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react';
 import type { ItemDraft, Priority, Status } from '../types';
+import './item-form.component.css';
 
 type ItemFormProps = {
     isNew: boolean;
