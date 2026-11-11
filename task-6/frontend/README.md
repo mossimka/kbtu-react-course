@@ -11,8 +11,8 @@ live analytics dashboard.
 
 - Client-side routing with nested routes and a shared layout
 - Lazy-loaded pages with a `Suspense` loading fallback
-- Home, About, Missions, Mission details, Create mission, Dashboard, Login, Register, Account and 404 pages
-- Real bearer-token authentication with registration, login, session restore and logout
+- Home, About, Missions, Mission details, Create mission, Dashboard, Login, Register, Profile and 404 pages
+- Firebase Email/Password and Google authentication with persistent sessions
 - Protected mission creation/editing and a private account page
 - Search by mission name, destination and mission type
 - Status and priority filters stored in the URL
@@ -35,7 +35,7 @@ live analytics dashboard.
 | `/dashboard`    | Dashboard       | Live statistics, breakdowns and filters         |
 | `/login`        | Login           | Email/password sign-in                          |
 | `/register`     | Register        | Create an operator account                      |
-| `/account`      | Account         | Protected operator profile and sign-out         |
+| `/profile`      | Profile         | Protected Firebase profile and sign-out         |
 | `*`             | Not found       | Custom 404 page                                 |
 
 Mission filters are synchronized with the query string, for example:
@@ -55,16 +55,22 @@ src/
 ├── widgets/      # Layout, navigation, header, mission list
 ├── features/     # Auth context/forms/guards and mission filters
 ├── entities/     # Mission model, API facade and card UI
-├── services/     # Shared fetch layer, auth API and token storage
+├── services/     # API, Firebase authentication and mission cache
 └── shared/       # Tokens, config and reusable UI states
 ```
 
 ## Local development
 
-Create `frontend/.env.local` if you need to override the API origin:
+Create `frontend/.env.local` from the task-level `.env.example`:
 
 ```env
 VITE_API_URL=http://localhost:8080
+VITE_FIREBASE_API_KEY=your-firebase-api-key
+VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-project.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+VITE_FIREBASE_APP_ID=your-firebase-app-id
 ```
 
 Install and start the frontend:
@@ -93,16 +99,18 @@ docker compose up --build
 | Variable                         | Where    | Purpose                                 |
 | -------------------------------- | -------- | --------------------------------------- |
 | `VITE_API_URL`                 | Frontend | Base URL of the Spring API              |
+| `VITE_FIREBASE_*`              | Frontend | Firebase Web App configuration          |
 | `PORT`                         | Backend  | HTTP port (defaults to `8080`)        |
 | `CORS_ALLOWED_ORIGIN_PATTERNS` | Backend  | Allowed frontend origins                |
 | `AUTH_TOKEN_TTL_HOURS`         | Backend  | Bearer token lifetime (default `168`) |
 
 `VITE_API_URL` is replaced during the Vite build, so changing it requires a new deployment.
 
-## Authentication
+## Authentication and caching
 
-The API issues opaque bearer tokens. Passwords are hashed with BCrypt, and only a SHA-256 hash of each
-token is stored in the database.
+Firebase handles Email/Password and Google sign-in, persistent sessions, loading state, and logout. The auth
+provider supplies the current Firebase user through `useAuth`; protected routes redirect unauthenticated users
+to `/login`.
 
 1. `POST /api/auth/register` with `{ name, email, password }` returns a token and user profile.
 2. `POST /api/auth/login` with `{ email, password }` returns a token and user profile.
@@ -110,9 +118,8 @@ token is stored in the database.
 4. `GET /api/auth/me` restores the current session on page reload.
 5. `POST /api/auth/logout` revokes all tokens for the user.
 
-The frontend stores the token in `localStorage`, restores the session through `/api/auth/me`, and clears the
-token if the session is invalid. Mission reads stay public; creating, editing, updating status and deleting
-missions require authentication.
+Mission pages use a 30-second cache keyed by the complete query. Query changes cancel the previous request,
+and mission mutations invalidate every cached page so stale data is not displayed after a write.
 
 ## API
 
