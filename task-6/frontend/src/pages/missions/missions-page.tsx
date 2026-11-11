@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import type { Mission, MissionPriority, MissionStatus } from '../../entities/mission/model/types';
+import type { MissionPriority, MissionStatus } from '../../entities/mission/model/types';
 import { useAuth } from '../../features/auth/auth-context';
 import { MissionFilters } from '../../features/mission-filters/mission-filters';
-import { deleteMission, getCachedMissions, updateMissionStatus } from '../../services/service';
+import { deleteMission, getMissions, updateMissionStatus, type MissionQuery } from '../../services/service';
 import { EmptyState } from '../../shared/ui/empty-state/empty-state';
 import { Pagination } from '../../shared/ui/pagination/pagination';
 import { ErrorState, LoadingState, SuccessState } from '../../shared/ui/request-state/request-state';
@@ -40,42 +41,21 @@ export function MissionsPage() {
     const sortDirection = parseDirection(searchParams.get('direction') ?? searchParams.get('sortDirection'));
     const page = parsePage(searchParams.get('page'));
 
-    const [missions, setMissions] = useState<Mission[]>([]);
-    const [totalPages, setTotalPages] = useState(0);
-    const [totalElements, setTotalElements] = useState(0);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
-    const [reloadKey, setReloadKey] = useState(0);
-
-    useEffect(() => {
-        const controller = new AbortController();
-
-        const load = async () => {
-            setLoading(true);
-            setError(null);
-
-            try {
-                const result = await getCachedMissions(
-                    { search, status, priority, sortBy, sortDirection, page, size: PAGE_SIZE },
-                    controller.signal,
-                );
-                setMissions(result.content);
-                setTotalPages(result.totalPages);
-                setTotalElements(result.totalElements);
-            } catch (requestError: unknown) {
-                if (requestError instanceof DOMException && requestError.name === 'AbortError') return;
-                setMissions([]);
-                setError('The API could not load the mission manifest.');
-            } finally {
-                if (!controller.signal.aborted) setLoading(false);
-            }
-        };
-
-        void load();
-
-        return () => controller.abort();
-    }, [search, status, priority, sortBy, sortDirection, page, reloadKey]);
+    const [mutationError, setMutationError] = useState<string | null>(null);
+    const query: MissionQuery = { search, status, priority, sortBy, sortDirection, page, size: PAGE_SIZE };
+    const {
+        data,
+        isLoading: loading,
+        isError,
+        refetch,
+    } = useQuery({
+        queryKey: ['missions', query],
+        queryFn: ({ signal }) => getMissions(query, signal),
+    });
+    const missions = data?.content ?? [];
+    const totalPages = data?.totalPages ?? 0;
+    const totalElements = data?.totalElements ?? 0;
 
     const updateParam = (key: string, value: string) => {
         setSearchParams((current) => {
@@ -100,8 +80,6 @@ export function MissionsPage() {
         );
     };
 
-    const reload = () => setReloadKey((key) => key + 1);
-
     const showMessage = (text: string) => {
         setMessage(text);
         window.setTimeout(() => setMessage(null), 3000);
@@ -109,21 +87,21 @@ export function MissionsPage() {
 
     const handleDelete = async (id: number) => {
         try {
+            setMutationError(null);
             await deleteMission(id);
             showMessage('Mission deleted successfully.');
-            reload();
         } catch {
-            setError('Mission deletion failed. Please try again.');
+            setMutationError('Mission deletion failed. Please try again.');
         }
     };
 
     const handleStatusChange = async (id: number, nextStatus: MissionStatus) => {
         try {
+            setMutationError(null);
             await updateMissionStatus(id, nextStatus);
             showMessage('Mission status updated.');
-            reload();
         } catch {
-            setError('Status update failed. Please try again.');
+            setMutationError('Status update failed. Please try again.');
         }
     };
 
@@ -150,11 +128,12 @@ export function MissionsPage() {
                 />
 
                 {message && <SuccessState message={message} />}
+                {mutationError && <ErrorState message={mutationError} onRetry={() => setMutationError(null)} />}
 
                 {loading ? (
                     <LoadingState />
-                ) : error ? (
-                    <ErrorState message={error} onRetry={reload} />
+                ) : isError ? (
+                    <ErrorState message='The API could not load the mission manifest.' onRetry={() => void refetch()} />
                 ) : (
                     <>
                         <div className={styles.summary}>

@@ -55,7 +55,7 @@ src/
 ├── widgets/      # Layout, navigation, header, mission list
 ├── features/     # Auth context/forms/guards and mission filters
 ├── entities/     # Mission model, API facade and card UI
-├── services/     # API, Firebase authentication and mission cache
+├── services/     # API, Firebase authentication and TanStack Query client
 └── shared/       # Tokens, config and reusable UI states
 ```
 
@@ -118,8 +118,9 @@ to `/login`.
 4. `GET /api/auth/me` restores the current session on page reload.
 5. `POST /api/auth/logout` revokes all tokens for the user.
 
-Mission pages use a 30-second cache keyed by the complete query. Query changes cancel the previous request,
-and mission mutations invalidate every cached page so stale data is not displayed after a write.
+Mission pages use TanStack Query with a 30-second stale time and query keys containing the complete request
+parameters. Query changes cancel the previous request, and mission mutations invalidate every cached page so
+stale data is not displayed after a write.
 
 ## API
 

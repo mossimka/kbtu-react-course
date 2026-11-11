@@ -6,7 +6,7 @@ import type {
     MissionStatus,
 } from '../entities/mission/model/types';
 import { auth } from './firebase';
-import { getCachedMissionPage, invalidateMissionCache } from './mission-cache';
+import { invalidateMissionQueries } from './query-client';
 
 const API_URL = (import.meta.env.VITE_API_URL ?? 'http://localhost:8080').replace(/\/$/, '');
 
@@ -105,10 +105,6 @@ export const getMissions = (query: MissionQuery = {}, signal?: AbortSignal): Pro
         totalPages: result.totalPages,
     }));
 
-export const getCachedMissions = async (query: MissionQuery = {}, signal?: AbortSignal): Promise<MissionPage> => {
-    return getCachedMissionPage(query, signal);
-};
-
 export const getAllMissions = async (signal?: AbortSignal): Promise<Mission[]> => {
     const size = 50;
     const firstPage = await getMissions({ page: 0, size }, signal);
@@ -130,28 +126,34 @@ const missionBody = (mission: MissionInput) =>
         priority: mission.priority.toUpperCase(),
     });
 
-export const createMission = (mission: MissionInput) =>
-    apiRequest<BackendMission>('/api/missions', { method: 'POST', body: missionBody(mission) }).then((result) => {
-        invalidateMissionCache();
-        return normalizeMission(result);
+export const createMission = async (mission: MissionInput) => {
+    const result = await apiRequest<BackendMission>('/api/missions', {
+        method: 'POST',
+        body: missionBody(mission),
     });
+    await invalidateMissionQueries();
+    return normalizeMission(result);
+};
 
-export const updateMission = (id: number, mission: MissionInput) =>
-    apiRequest<BackendMission>(`/api/missions/${id}`, { method: 'PUT', body: missionBody(mission) }).then((result) => {
-        invalidateMissionCache();
-        return normalizeMission(result);
+export const updateMission = async (id: number, mission: MissionInput) => {
+    const result = await apiRequest<BackendMission>(`/api/missions/${id}`, {
+        method: 'PUT',
+        body: missionBody(mission),
     });
+    await invalidateMissionQueries();
+    return normalizeMission(result);
+};
 
-export const updateMissionStatus = (id: number, status: MissionStatus) =>
-    apiRequest<BackendMission>(`/api/missions/${id}/status`, {
+export const updateMissionStatus = async (id: number, status: MissionStatus) => {
+    const result = await apiRequest<BackendMission>(`/api/missions/${id}/status`, {
         method: 'PATCH',
         body: JSON.stringify({ status: status.toUpperCase() }),
-    }).then((result) => {
-        invalidateMissionCache();
-        return normalizeMission(result);
     });
+    await invalidateMissionQueries();
+    return normalizeMission(result);
+};
 
-export const deleteMission = (id: number) =>
-    apiRequest<void>(`/api/missions/${id}`, { method: 'DELETE' }).then(() => {
-        invalidateMissionCache();
-    });
+export const deleteMission = async (id: number) => {
+    await apiRequest<void>(`/api/missions/${id}`, { method: 'DELETE' });
+    await invalidateMissionQueries();
+};

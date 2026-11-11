@@ -12,7 +12,7 @@ Repository: https://github.com/mossimka/kbtu-react-course
 - Searchable, filterable, sortable, paginated mission manifest
 - Mission create, edit, status update, and delete operations
 - Loading, error, empty, and success states
-- 30-second mission-page cache with query-based cache keys
+- TanStack Query mission-page cache with query-based keys and invalidation
 
 ## Setup
 
@@ -54,7 +54,8 @@ provider and database security rules must still be configured in the Firebase co
 
 ## Caching strategy
 
-Mission list requests are cached in `frontend/src/services/mission-cache.ts`. Each entry is keyed by the complete
-query (search, filters, sort, page, and page size) and expires after 30 seconds. An `AbortController` cancels
-the previous request when the URL query changes, so an older response cannot overwrite newer results. Creating,
-updating, changing status, or deleting a mission clears the cache, ensuring the next read uses fresh server data.
+Mission list requests use TanStack Query through the shared `QueryClient`. Each query is keyed by the complete
+query object (search, filters, sort, page, and page size), stays fresh for 30 seconds, and is garbage-collected
+after five minutes. TanStack Query passes an `AbortSignal` to the API request when the query changes, so an older
+response cannot overwrite newer results. Creating, updating, changing status, or deleting a mission invalidates
+the `missions` query family, ensuring the next read uses fresh server data.
