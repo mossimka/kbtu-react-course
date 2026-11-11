@@ -1,0 +1,38 @@
+@use '../../shared/styles/tokens' as *;
+
+.shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background:
+        linear-gradient(rgba($background, 0.92), rgba($background, 0.98)),
+        linear-gradient(90deg, rgba($blue, 0.035) 1px, transparent 1px),
+        linear-gradient(rgba($blue, 0.035) 1px, transparent 1px);
+    background-size:
+        auto,
+        42px 42px,
+        42px 42px;
+}
+
+.content {
+    flex: 1;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: 1240px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 22px 32px 28px;
+    border-top: 1px solid $line;
+    color: $muted;
+    @include mono-label($small-size, 0.1em);
+}
+
+@media (max-width: $mobile-breakpoint) {
+    .footer {
+        padding: 18px;
+    }
+}

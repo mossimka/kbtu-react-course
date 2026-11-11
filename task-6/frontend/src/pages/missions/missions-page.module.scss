@@ -1,0 +1,11 @@
+@use '../../shared/styles/tokens' as *;
+
+.summary {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 16px 0 0;
+    color: $muted;
+    @include mono-label($small-size, 0.08em);
+}
