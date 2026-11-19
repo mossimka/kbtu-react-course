@@ -1,0 +1,93 @@
+@use '../../shared/styles/tokens' as *;
+
+.root {
+    position: fixed;
+    right: max(18px, env(safe-area-inset-right));
+    bottom: max(18px, env(safe-area-inset-bottom));
+    z-index: 80;
+    display: flex;
+    width: min(620px, calc(100vw - 36px));
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 18px;
+    border: 1px solid $blue;
+    background: rgba(#0d151e, 0.98);
+    box-shadow: 0 18px 60px rgba(#000, 0.55);
+    @include mono-label($small-size, 0.04em);
+}
+
+.copy {
+    display: flex;
+    flex: 1 1 280px;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    line-height: 1.6;
+}
+
+.copy strong {
+    color: $blue;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+}
+
+.copy span {
+    color: $text;
+    font-family: $display;
+    font-size: 13px;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.actions button {
+    min-height: 42px;
+    padding: 10px 14px;
+    border: 1px solid $green-border;
+    background: rgba($green, 0.08);
+    color: $green;
+    @include mono-label($small-size, 0.05em);
+    text-transform: uppercase;
+}
+
+.actions button:hover:not(:disabled) {
+    border-color: $green;
+    background: rgba($green, 0.16);
+}
+
+.actions button:disabled {
+    cursor: wait;
+    opacity: 0.6;
+}
+
+.actions .later {
+    border-color: $line-strong;
+    background: transparent;
+    color: $muted;
+}
+
+@media (max-width: $mobile-breakpoint) {
+    .root {
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+        width: auto;
+        padding: 16px;
+    }
+
+    .actions {
+        width: 100%;
+    }
+
+    .actions button {
+        flex: 1;
+        min-height: 46px;
+    }
+}

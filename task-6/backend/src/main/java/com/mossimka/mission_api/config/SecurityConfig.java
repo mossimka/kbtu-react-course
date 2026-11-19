@@ -4,7 +4,9 @@ import com.mossimka.mission_api.security.RestAccessDeniedHandler;
 import com.mossimka.mission_api.security.RestAuthenticationEntryPoint;
 import com.mossimka.mission_api.security.TokenAuthenticationFilter;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -58,9 +60,16 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource(
-            @Value("${app.cors.allowed-origin-patterns}") String[] allowedOriginPatterns) {
+            @Value("${app.cors.allowed-origin-patterns}") String[] allowedOriginPatterns,
+            @Value("${app.cors.always-allowed-origin-patterns:}") String[] alwaysAllowedOriginPatterns) {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of(allowedOriginPatterns));
+        configuration.setAllowedOriginPatterns(Stream.concat(
+                        Arrays.stream(allowedOriginPatterns),
+                        Arrays.stream(alwaysAllowedOriginPatterns))
+                .map(String::trim)
+                .filter(pattern -> !pattern.isEmpty())
+                .distinct()
+                .toList());
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setMaxAge(3600L);

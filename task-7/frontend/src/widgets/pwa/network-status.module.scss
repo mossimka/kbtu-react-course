@@ -1,0 +1,62 @@
+@use '../../shared/styles/tokens' as *;
+
+.root {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    min-height: 30px;
+    padding: 6px 9px;
+    border: 1px solid $line-strong;
+    color: $muted;
+    @include mono-label($small-size, 0.06em);
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.root i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.label {
+    line-height: 1;
+}
+
+.online {
+    color: $green;
+    border-color: $green-border;
+}
+
+.online i {
+    box-shadow: 0 0 10px currentColor;
+}
+
+.offline {
+    color: $red;
+    border-color: rgba($red, 0.45);
+    background: rgba($red, 0.06);
+}
+
+.cached {
+    color: $yellow;
+    border-color: $yellow-border;
+    background: rgba($yellow, 0.06);
+}
+
+.detail {
+    color: $muted;
+}
+
+@media (max-width: $compact-breakpoint) {
+    .root {
+        gap: 5px;
+        padding: 5px 7px;
+    }
+
+    .detail {
+        display: none;
+    }
+}
