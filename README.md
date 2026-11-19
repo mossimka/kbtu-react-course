@@ -21,7 +21,7 @@ GitHub Pages.
   live online/offline indicator
 - Responsive UI from 320px in portrait and landscape with an accessible mobile navigation menu
 - All previous mission search, filters, sorting, pagination, dashboard, CRUD, protected routes and
-  authentication flows (Firebase when configured, backend token fallback otherwise)
+  authentication flows, including Firebase Email/Password and Google sign-in, with a backend token fallback
 
 See [`task-7/README.md`](./task-7/README.md) and [`task-7/frontend/README.md`](./task-7/frontend/README.md)
 for setup, architecture, caching strategy and deployment details.

@@ -13,7 +13,7 @@
  * chooses to activate it.
  */
 
-const VERSION = '1795065080667';
+const VERSION = '1795071767218';
 const BASE_PATH = '/kbtu-react-course/';
 const API_ORIGIN = 'https://kbtu-react-course.onrender.com';
 const PRECACHE_URLS = [
@@ -21,20 +21,20 @@ const PRECACHE_URLS = [
     "/kbtu-react-course/index.html",
     "/kbtu-react-course/offline.html",
     "/kbtu-react-course/manifest.json",
-    "/kbtu-react-course/assets/index-CoeTNR_A.js",
-    "/kbtu-react-course/assets/about-page-Go-_UF3V.js",
-    "/kbtu-react-course/assets/account-page-0xpLLbWo.js",
-    "/kbtu-react-course/assets/auth-form-u6dvsomM.js",
-    "/kbtu-react-course/assets/dashboard-page-BiV7BtbJ.js",
-    "/kbtu-react-course/assets/home-page-D98yeTmx.js",
-    "/kbtu-react-course/assets/login-page-BY8h13qS.js",
-    "/kbtu-react-course/assets/mission-create-page-BhEGl4V0.js",
-    "/kbtu-react-course/assets/mission-details-page-Cxk9HUAW.js",
-    "/kbtu-react-course/assets/missions-page-DdTU5CUL.js",
-    "/kbtu-react-course/assets/not-found-page-BcmfUJ0c.js",
-    "/kbtu-react-course/assets/offline-page-hulrkE49.js",
-    "/kbtu-react-course/assets/register-page-MkCTxMWT.js",
-    "/kbtu-react-course/assets/request-state-CnNBuu-W.js",
+    "/kbtu-react-course/assets/index-pRe1Sl0R.js",
+    "/kbtu-react-course/assets/about-page-C6jr2Efh.js",
+    "/kbtu-react-course/assets/account-page-CDaGZksd.js",
+    "/kbtu-react-course/assets/auth-form-BXvUovYr.js",
+    "/kbtu-react-course/assets/dashboard-page-wX6wP5H9.js",
+    "/kbtu-react-course/assets/home-page-CJFxW3-R.js",
+    "/kbtu-react-course/assets/login-page-PTm6oWD9.js",
+    "/kbtu-react-course/assets/mission-create-page-dGqCRVQo.js",
+    "/kbtu-react-course/assets/mission-details-page-XdTQftrm.js",
+    "/kbtu-react-course/assets/missions-page-CxpofcS3.js",
+    "/kbtu-react-course/assets/not-found-page-FeUBmjE0.js",
+    "/kbtu-react-course/assets/offline-page-BHNDJGiZ.js",
+    "/kbtu-react-course/assets/register-page-C2_A5K4c.js",
+    "/kbtu-react-course/assets/request-state-LkwJZz2s.js",
     "/kbtu-react-course/assets/about-page-DD16rmol.css",
     "/kbtu-react-course/assets/account-page-mhAJ5IdY.css",
     "/kbtu-react-course/assets/auth-form-CKb1TAZZ.css",

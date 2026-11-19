@@ -1,1 +1,0 @@
-import{k as e}from"./index-CoeTNR_A.js";import{t}from"./auth-form-u6dvsomM.js";var n=e();function r(){return(0,n.jsx)(t,{mode:`login`})}export{r as LoginPage};

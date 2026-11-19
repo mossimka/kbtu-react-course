@@ -55,6 +55,9 @@ docker compose up --build
 - `VITE_FIREBASE_MESSAGING_SENDER_ID`
 - `VITE_FIREBASE_APP_ID`
 
+The backend reads `FIREBASE_PROJECT_ID` (defaults to the project in `application.properties`). It must match
+`VITE_FIREBASE_PROJECT_ID` in the frontend build so Firebase ID tokens are accepted.
+
 Never commit `.env.local`. Firebase browser configuration values are intended for client-side use, but Firebase
 provider and database security rules must still be configured in the Firebase console.
 
@@ -81,8 +84,9 @@ includes the app shell, every lazy JS chunk, every CSS file, icons, the manifest
 - **fetch** uses network-first for navigations and public mission APIs, and cache-first for static assets.
 
 Caches are bounded: API responses 60 entries / 24 hours, visited pages 20 entries / 7 days, runtime assets
-60 entries / 30 days. Expired entries and overflow are removed. Public mission list/detail responses are cached;
-`/api/auth*`, `/api/private*`, non-GET requests and any request with an `Authorization` header are never cached.
+60 entries / 30 days. Expired entries and overflow are removed. Public mission list/detail responses are cached
+even when an `Authorization` header is present; `/api/auth*`, `/api/private*` and non-GET requests are never
+cached.
 
 Cached responses carry `X-PWA-Cache`, `X-PWA-Cache-Age` and `X-PWA-Offline` headers. The UI shows a **SAVED
 DATA** banner with the cache age instead of pretending cached data is live. Navigations that cannot be resolved
@@ -121,9 +125,11 @@ cp ../../docs/index.html ../../docs/404.html
 allows the Pages origin through `CORS_ALWAYS_ALLOWED_ORIGIN_PATTERNS` and the optional
 `CORS_ALLOWED_ORIGIN_PATTERNS` environment variable.
 
-Firebase configuration is optional at build time. Without `VITE_FIREBASE_*` values the app falls back to the
-backend token endpoints for email/password registration and sign-in, while public mission data, dashboard,
-filters, CRUD and offline mode remain fully usable. Google sign-in requires Firebase.
+Firebase configuration is read at build time from `frontend/.env.local`. The deployed bundle includes the
+Firebase Web App values, so Email/Password and Google sign-in are available. The backend verifies the resulting
+Firebase ID tokens against Google's public signing keys using `FIREBASE_PROJECT_ID`; the first authenticated
+request creates or links the local `app_users` profile. Builds without `VITE_FIREBASE_*` values still fall back
+to the backend token endpoints for email/password registration and sign-in.
 
 The backend defaults to `spring.jpa.hibernate.ddl-auto=update`, so a fresh managed Postgres database gains the
 `missions`, `app_users` and `auth_tokens` tables without manual SQL. Override it with

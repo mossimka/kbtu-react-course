@@ -113,16 +113,22 @@ docker compose up --build
 | `CORS_ALLOWED_ORIGIN_PATTERNS` | Backend  | Allowed frontend origins                |
 | `CORS_ALWAYS_ALLOWED_ORIGIN_PATTERNS` | Backend | Extra origins merged with the list above |
 | `AUTH_TOKEN_TTL_HOURS`         | Backend  | Bearer token lifetime (default `168`) |
+| `FIREBASE_PROJECT_ID`          | Backend  | Firebase project that issued the browser ID tokens |
 
 `VITE_API_URL` is replaced during the Vite build, so changing it requires a new deployment.
 
 ## Authentication and caching
 
 Firebase handles Email/Password and Google sign-in, persistent sessions, loading state, and logout when the
-`VITE_FIREBASE_*` values are present. If they are absent, the provider falls back to the Spring API token
-endpoints so email/password registration, sign-in, protected routes and CRUD still work in the deployed build.
-The auth provider supplies the current user through `useAuth`; protected routes redirect unauthenticated users
-to `/login`.
+`VITE_FIREBASE_*` values are present. The browser sends the Firebase ID token as `Authorization: Bearer <token>`;
+the Spring API verifies its signature, issuer, audience and expiry against Google's public keys, then creates or
+links the local `app_users` profile. `FIREBASE_PROJECT_ID` on the backend must match the frontend project.
+
+If the `VITE_FIREBASE_*` values are absent, the provider falls back to the Spring API token endpoints so
+email/password registration, sign-in, protected routes and CRUD still work. The auth provider supplies the
+current user through `useAuth`; protected routes redirect unauthenticated users to `/login`.
+
+Backend fallback endpoints:
 
 1. `POST /api/auth/register` with `{ name, email, password }` returns a token and user profile.
 2. `POST /api/auth/login` with `{ email, password }` returns a token and user profile.
@@ -289,9 +295,9 @@ CORS_ALLOWED_ORIGIN_PATTERNS=https://mossimka.github.io
 
 The Docker image listens on Render's `PORT` variable and falls back to `8080` locally.
 
-Firebase is optional at build time. Without `VITE_FIREBASE_*` values email/password sign-in falls back to the
-backend token endpoints, so protected routes and CRUD work with a backend account. Set the Firebase variables
-at build time to enable Google sign-in as well.
+Firebase is read at build time. The deployed bundle is built with the Firebase Web App values, enabling
+Email/Password and Google sign-in; the backend verifies Firebase ID tokens with a matching
+`FIREBASE_PROJECT_ID`. A build without `VITE_FIREBASE_*` values still works through the backend token fallback.
 
 ### PWA verification
 

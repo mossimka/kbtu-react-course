@@ -2,6 +2,7 @@ package com.mossimka.mission_api.security;
 
 import com.mossimka.mission_api.entity.AppUser;
 import com.mossimka.mission_api.service.AuthTokenService;
+import com.mossimka.mission_api.service.FirebaseUserService;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,6 +29,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final AuthTokenService tokenService;
+    private final FirebaseUserService firebaseUserService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -39,7 +41,9 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
             String rawToken = header.substring(BEARER_PREFIX.length()).trim();
 
-            tokenService.resolveUser(rawToken).ifPresent(user -> authenticate(user, request));
+            tokenService.resolveUser(rawToken)
+                    .or(() -> firebaseUserService.resolveUser(rawToken))
+                    .ifPresent(user -> authenticate(user, request));
         }
 
         filterChain.doFilter(request, response);

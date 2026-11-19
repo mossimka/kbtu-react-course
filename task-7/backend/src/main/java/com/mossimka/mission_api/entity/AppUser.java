@@ -37,6 +37,10 @@ public class AppUser {
     @Column(nullable = false, length = 100)
     private String passwordHash;
 
+    /** Firebase `sub` claim. Null for accounts created through the backend fallback. */
+    @Column(unique = true, length = 128)
+    private String firebaseUid;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Role role = Role.USER;
