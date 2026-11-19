@@ -1,1 +1,0 @@
-import{k as e}from"./index-pRe1Sl0R.js";import{t}from"./auth-form-BXvUovYr.js";var n=e();function r(){return(0,n.jsx)(t,{mode:`login`})}export{r as LoginPage};

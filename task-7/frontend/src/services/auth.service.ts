@@ -135,6 +135,10 @@ export const authErrorMessage = (error: unknown): string => {
                 return 'Google sign-in was cancelled.';
             case 'auth/popup-blocked':
                 return 'Allow popups in your browser to continue with Google.';
+            case 'auth/unauthorized-domain':
+                return 'This domain is not authorized for sign-in. Add it in Firebase Authentication → Settings → Authorized domains.';
+            case 'auth/operation-not-allowed':
+                return 'This sign-in method is disabled in Firebase Authentication.';
             case 'auth/invalid-api-key':
             case 'auth/configuration-not-found':
                 return 'Authentication is not configured for this deployment.';

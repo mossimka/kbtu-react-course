@@ -1,0 +1,1 @@
+import{k as e}from"./index-Bqxgr0YV.js";import{t}from"./auth-form-Cd-j7qUY.js";var n=e();function r(){return(0,n.jsx)(t,{mode:`register`})}export{r as RegisterPage};

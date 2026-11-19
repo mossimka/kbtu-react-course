@@ -29,7 +29,9 @@ console:
 Copy-Item .env.example frontend\.env.local
 ```
 
-In Firebase Authentication, enable **Email/Password** and **Google** providers. Start the frontend with:
+In Firebase Authentication, enable **Email/Password** and **Google** providers. Under
+**Authentication → Settings → Authorized domains**, add `localhost` and any deployed host such as
+`mossimka.github.io`, otherwise Google sign-in fails with `auth/unauthorized-domain`. Start the frontend with:
 
 ```powershell
 cd frontend

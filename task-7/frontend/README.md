@@ -120,7 +120,9 @@ docker compose up --build
 ## Authentication and caching
 
 Firebase handles Email/Password and Google sign-in, persistent sessions, loading state, and logout when the
-`VITE_FIREBASE_*` values are present. The browser sends the Firebase ID token as `Authorization: Bearer <token>`;
+`VITE_FIREBASE_*` values are present. Add `localhost` and every deployed host (for example
+`mossimka.github.io`) under **Authentication → Settings → Authorized domains**; Google sign-in fails with
+`auth/unauthorized-domain` otherwise. The browser sends the Firebase ID token as `Authorization: Bearer <token>`;
 the Spring API verifies its signature, issuer, audience and expiry against Google's public keys, then creates or
 links the local `app_users` profile. `FIREBASE_PROJECT_ID` on the backend must match the frontend project.
 
