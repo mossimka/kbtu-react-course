@@ -1,1 +1,0 @@
-import{w as e}from"./index-kRW3axRy.js";import{t}from"./auth-form-KIImcwtu.js";var n=e();function r(){return(0,n.jsx)(t,{mode:`login`})}export{r as LoginPage};

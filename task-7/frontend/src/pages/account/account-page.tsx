@@ -23,8 +23,8 @@ export function AccountPage() {
                     <p className={styles.eyebrow}>OPERATOR PROFILE / ACTIVE SESSION</p>
                     <h1>Account</h1>
                     <p className={styles.lead}>
-                        Signed in as <strong>{user.displayName ?? user.email}</strong>. Your Firebase session persists
-                        across browser refreshes.
+                        Signed in as <strong>{user.displayName ?? user.email}</strong>. Your session persists across
+                        browser refreshes.
                     </p>
                 </div>
                 <button
@@ -48,7 +48,7 @@ export function AccountPage() {
                 </article>
                 <article>
                     <span>ROLE</span>
-                    <strong>OPERATOR</strong>
+                    <strong>{user.role ?? 'OPERATOR'}</strong>
                 </article>
                 <article>
                     <span>MEMBER SINCE</span>

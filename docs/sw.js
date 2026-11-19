@@ -13,7 +13,7 @@
  * chooses to activate it.
  */
 
-const VERSION = '1795064118409';
+const VERSION = '1795065080667';
 const BASE_PATH = '/kbtu-react-course/';
 const API_ORIGIN = 'https://kbtu-react-course.onrender.com';
 const PRECACHE_URLS = [
@@ -21,21 +21,20 @@ const PRECACHE_URLS = [
     "/kbtu-react-course/index.html",
     "/kbtu-react-course/offline.html",
     "/kbtu-react-course/manifest.json",
-    "/kbtu-react-course/assets/index-kRW3axRy.js",
-    "/kbtu-react-course/assets/about-page-mHyYlHRn.js",
-    "/kbtu-react-course/assets/account-page-D59M3boq.js",
-    "/kbtu-react-course/assets/auth-form-KIImcwtu.js",
-    "/kbtu-react-course/assets/dashboard-page-C1F5W5Fb.js",
-    "/kbtu-react-course/assets/home-page-Bs_NIbsr.js",
-    "/kbtu-react-course/assets/login-page-DL3dAhmL.js",
-    "/kbtu-react-course/assets/mission-create-page-DIP7IECG.js",
-    "/kbtu-react-course/assets/mission-details-page-DWLmeVkE.js",
-    "/kbtu-react-course/assets/missions-page-CH6k0sXs.js",
-    "/kbtu-react-course/assets/not-found-page-BUnTYoMO.js",
-    "/kbtu-react-course/assets/offline-page-BZcM_Lhe.js",
-    "/kbtu-react-course/assets/register-page-LW4fkonk.js",
-    "/kbtu-react-course/assets/request-state-BvoJhysh.js",
-    "/kbtu-react-course/assets/service-jM2SQbfC.js",
+    "/kbtu-react-course/assets/index-CoeTNR_A.js",
+    "/kbtu-react-course/assets/about-page-Go-_UF3V.js",
+    "/kbtu-react-course/assets/account-page-0xpLLbWo.js",
+    "/kbtu-react-course/assets/auth-form-u6dvsomM.js",
+    "/kbtu-react-course/assets/dashboard-page-BiV7BtbJ.js",
+    "/kbtu-react-course/assets/home-page-D98yeTmx.js",
+    "/kbtu-react-course/assets/login-page-BY8h13qS.js",
+    "/kbtu-react-course/assets/mission-create-page-BhEGl4V0.js",
+    "/kbtu-react-course/assets/mission-details-page-Cxk9HUAW.js",
+    "/kbtu-react-course/assets/missions-page-DdTU5CUL.js",
+    "/kbtu-react-course/assets/not-found-page-BcmfUJ0c.js",
+    "/kbtu-react-course/assets/offline-page-hulrkE49.js",
+    "/kbtu-react-course/assets/register-page-MkCTxMWT.js",
+    "/kbtu-react-course/assets/request-state-CnNBuu-W.js",
     "/kbtu-react-course/assets/about-page-DD16rmol.css",
     "/kbtu-react-course/assets/account-page-mhAJ5IdY.css",
     "/kbtu-react-course/assets/auth-form-CKb1TAZZ.css",
@@ -306,7 +305,6 @@ self.addEventListener('fetch', (event) => {
 
     if (isApiRequest(url)) {
         if (isPrivateApiRequest(url)) return;
-        if (request.headers.get('Authorization')) return;
         if (!isPublicMissionRequest(url)) return;
         event.respondWith(handleApiRequest(request));
         return;

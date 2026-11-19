@@ -118,8 +118,10 @@ docker compose up --build
 
 ## Authentication and caching
 
-Firebase handles Email/Password and Google sign-in, persistent sessions, loading state, and logout. The auth
-provider supplies the current Firebase user through `useAuth`; protected routes redirect unauthenticated users
+Firebase handles Email/Password and Google sign-in, persistent sessions, loading state, and logout when the
+`VITE_FIREBASE_*` values are present. If they are absent, the provider falls back to the Spring API token
+endpoints so email/password registration, sign-in, protected routes and CRUD still work in the deployed build.
+The auth provider supplies the current user through `useAuth`; protected routes redirect unauthenticated users
 to `/login`.
 
 1. `POST /api/auth/register` with `{ name, email, password }` returns a token and user profile.
@@ -169,9 +171,10 @@ are used. Old caches are removed during activation.
 All caches are versioned (`orbital-<name>-<version>`), entries are timestamped, expired entries are removed,
 and the least recently inserted entries are evicted when a cache exceeds its budget.
 
-The worker never handles `POST`/`PUT`/`PATCH`/`DELETE`, `/api/auth*`, `/api/private*`, or any request that
-carries an `Authorization` header. Tokens, authenticated user data and private responses are therefore never
-written to the cache.
+The worker never handles `POST`/`PUT`/`PATCH`/`DELETE`, `/api/auth*`, `/api/private*`, or private API
+responses. Tokens, authenticated user data and private responses are therefore never written to the cache.
+Public mission GETs are cacheable even when the request carries an `Authorization` header, because the mission
+manifest and details are public data.
 
 Responses served from the cache include `X-PWA-Cache`, `X-PWA-Cache-Age` and `X-PWA-Offline` headers. The API
 layer reads them and shows a **SAVED DATA** banner with the cache age instead of presenting stale offline data
@@ -286,9 +289,9 @@ CORS_ALLOWED_ORIGIN_PATTERNS=https://mossimka.github.io
 
 The Docker image listens on Render's `PORT` variable and falls back to `8080` locally.
 
-Firebase is optional at build time. Without `VITE_FIREBASE_*` values the public mission manifest, dashboard,
-filters and offline mode still work; sign-in screens explain that authentication is not configured in that
-build. Set the Firebase variables at build time to enable authentication.
+Firebase is optional at build time. Without `VITE_FIREBASE_*` values email/password sign-in falls back to the
+backend token endpoints, so protected routes and CRUD work with a backend account. Set the Firebase variables
+at build time to enable Google sign-in as well.
 
 ### PWA verification
 

@@ -269,7 +269,6 @@ self.addEventListener('fetch', (event) => {
 
     if (isApiRequest(url)) {
         if (isPrivateApiRequest(url)) return;
-        if (request.headers.get('Authorization')) return;
         if (!isPublicMissionRequest(url)) return;
         event.respondWith(handleApiRequest(request));
         return;

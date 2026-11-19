@@ -8,6 +8,7 @@ import type {
 import { reportApiCacheStatus } from '../pwa/pwa-store';
 import { auth } from './firebase';
 import { invalidateMissionQueries } from './query-client';
+import { getBackendToken } from './token';
 
 const API_URL = (import.meta.env.VITE_API_URL ?? 'http://localhost:8080').replace(/\/$/, '');
 
@@ -67,7 +68,8 @@ const parseErrorMessage = (text: string, status: number): string => {
 };
 
 export const apiRequest = async <T>(path: string, options: RequestInit = {}, signal?: AbortSignal): Promise<T> => {
-    const token = auth?.currentUser ? await auth.currentUser.getIdToken() : null;
+    const firebaseToken = auth?.currentUser ? await auth.currentUser.getIdToken() : null;
+    const token = firebaseToken ?? getBackendToken();
     const response = await fetch(`${API_URL}${path}`, {
         ...options,
         signal,

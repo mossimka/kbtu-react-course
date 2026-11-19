@@ -121,6 +121,6 @@ cp ../../docs/index.html ../../docs/404.html
 allows the Pages origin through `CORS_ALWAYS_ALLOWED_ORIGIN_PATTERNS` and the optional
 `CORS_ALLOWED_ORIGIN_PATTERNS` environment variable.
 
-Firebase configuration is optional at build time. Without `VITE_FIREBASE_*` values the public mission manifest,
-dashboard, filters and offline mode remain fully usable, and the sign-in screens state that authentication is
-not configured in that build.
+Firebase configuration is optional at build time. Without `VITE_FIREBASE_*` values the app falls back to the
+backend token endpoints for email/password registration and sign-in, while public mission data, dashboard,
+filters, CRUD and offline mode remain fully usable. Google sign-in requires Firebase.

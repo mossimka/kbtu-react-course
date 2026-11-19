@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom';
-import { authErrorMessage, isFirebaseConfigured } from '../../services/auth.service';
+import { authErrorMessage, isGoogleAuthConfigured } from '../../services/auth.service';
 import { useAuth } from './auth-context';
 import styles from './auth-form.module.scss';
 
@@ -81,17 +81,11 @@ export const AuthForm = ({ mode }: AuthFormProps) => {
                 <h1>{isRegister ? 'Create account' : 'Sign in'}</h1>
                 <p className={styles.lead}>
                     {isRegister
-                        ? 'Create an operator profile to launch and manage missions. Your session is secured with Firebase Authentication.'
+                        ? 'Create an operator profile to launch and manage missions. Your session is secured with an authenticated operator account.'
                         : 'Sign in to launch missions, update flight records and manage the manifest.'}
                 </p>
 
                 <form className={styles.form} onSubmit={submit}>
-                    {!isFirebaseConfigured && (
-                        <p className={styles.error} role='status'>
-                            Authentication is not configured for this deployment. Public mission data remains fully
-                            available.
-                        </p>
-                    )}
                     {isRegister && (
                         <label>
                             Full name
@@ -152,15 +146,15 @@ export const AuthForm = ({ mode }: AuthFormProps) => {
                         </p>
                     )}
 
-                    <button disabled={submitting || !isFirebaseConfigured} type='submit'>
+                    <button disabled={submitting} type='submit'>
                         {submitting ? 'CONNECTING...' : isRegister ? 'CREATE ACCOUNT' : 'LOG IN'}
                     </button>
                 </form>
 
-                {!isRegister && (
+                {!isRegister && isGoogleAuthConfigured && (
                     <button
                         className={styles.google}
-                        disabled={submitting || !isFirebaseConfigured}
+                        disabled={submitting}
                         type='button'
                         onClick={() => void handleGoogleLogin()}
                     >
@@ -182,7 +176,7 @@ export const AuthForm = ({ mode }: AuthFormProps) => {
             <aside className={styles.aside} aria-hidden='true'>
                 <div className={styles.badge}>✦</div>
                 <p>SECURE CHANNEL</p>
-                <span>FIREBASE AUTH // DEEP SPACE NETWORK</span>
+                <span>AUTHENTICATED SESSION // DEEP SPACE NETWORK</span>
             </aside>
         </div>
     );
