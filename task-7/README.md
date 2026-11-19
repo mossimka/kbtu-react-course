@@ -124,3 +124,7 @@ allows the Pages origin through `CORS_ALWAYS_ALLOWED_ORIGIN_PATTERNS` and the op
 Firebase configuration is optional at build time. Without `VITE_FIREBASE_*` values the app falls back to the
 backend token endpoints for email/password registration and sign-in, while public mission data, dashboard,
 filters, CRUD and offline mode remain fully usable. Google sign-in requires Firebase.
+
+The backend defaults to `spring.jpa.hibernate.ddl-auto=update`, so a fresh managed Postgres database gains the
+`missions`, `app_users` and `auth_tokens` tables without manual SQL. Override it with
+`SPRING_JPA_HIBERNATE_DDL_AUTO` when a deployment uses explicit migrations.
