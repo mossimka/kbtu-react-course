@@ -1,7 +1,8 @@
 # Mission Control
 
-Task 6 is a React + TypeScript frontend backed by a Spring Boot API. The frontend keeps the existing mission
-search, filters, sorting, pagination, dashboard, and CRUD flows, and adds Firebase Authentication.
+Task 7 is an installable React + TypeScript PWA backed by a Spring Boot API. The frontend keeps the existing
+mission search, filters, sorting, pagination, dashboard, CRUD and Firebase Authentication flows, and adds a
+versioned service worker, runtime caching, an offline page and a responsive mobile interface.
 
 Repository: https://github.com/mossimka/kbtu-react-course
 
