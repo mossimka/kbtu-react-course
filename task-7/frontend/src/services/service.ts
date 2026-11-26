@@ -5,7 +5,6 @@ import type {
     MissionPriority,
     MissionStatus,
 } from '../entities/mission/model/types';
-import { reportApiCacheStatus } from '../pwa/pwa-store';
 import { auth } from './firebase';
 import { invalidateMissionQueries } from './query-client';
 import { getBackendToken } from './token';
@@ -79,16 +78,6 @@ export const apiRequest = async <T>(path: string, options: RequestInit = {}, sig
             ...options.headers,
         },
     });
-
-    if (response.headers.get('X-PWA-Offline') === '1') {
-        reportApiCacheStatus(false);
-    } else if (response.headers.get('X-PWA-Cache')) {
-        const ageHeader = response.headers.get('X-PWA-Cache-Age');
-        const age = ageHeader === null ? null : Number(ageHeader);
-        reportApiCacheStatus(true, Number.isFinite(age) ? age : null);
-    } else if (response.ok) {
-        reportApiCacheStatus(false);
-    }
 
     if (!response.ok) {
         const offline = response.headers.get('X-PWA-Offline') === '1';

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { formatCacheAge, formatCacheTimestamp } from '../../pwa/format-cache-age';
-import { usePwa } from '../../pwa/use-pwa';
+import { useOnlineStatus } from '../../pwa/use-online-status';
 import styles from './offline-page.module.scss';
 
 const checkConnection = async (): Promise<boolean> => {
@@ -22,7 +21,7 @@ const checkConnection = async (): Promise<boolean> => {
 };
 
 export function OfflinePage() {
-    const { online, usingCachedData, cacheAgeSeconds, cachedAt, serviceWorkerSupported } = usePwa();
+    const online = useOnlineStatus();
     const [checking, setChecking] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
     const wasOnline = useRef(online);
@@ -59,8 +58,6 @@ export function OfflinePage() {
         setMessage('The network is still unreachable. Check your connection and try again.');
     };
 
-    const lastSync = formatCacheTimestamp(cachedAt);
-
     return (
         <section className={styles.page}>
             <div className={styles.signal}>
@@ -91,19 +88,7 @@ export function OfflinePage() {
                                 runtime cache.
                             </p>
                         )}
-                        {usingCachedData && (
-                            <p className={styles.cacheInfo}>
-                                Last public API data: {formatCacheAge(cacheAgeSeconds)}
-                                {lastSync ? ` · ${lastSync}` : ''}
-                            </p>
-                        )}
                         {message && <p className={styles.message}>{message}</p>}
-                        {!serviceWorkerSupported && (
-                            <p className={styles.warning}>
-                                This browser does not support service workers. Offline pages and saved data are
-                                unavailable, but the app still works when connected.
-                            </p>
-                        )}
                     </div>
 
                     <div className={styles.actions}>

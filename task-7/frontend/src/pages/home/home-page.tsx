@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { usePwa } from '../../pwa/use-pwa';
+import { useOnlineStatus } from '../../pwa/use-online-status';
 import { getMissions } from '../../services/service';
 import styles from './home-page.module.scss';
 
 export function HomePage() {
-    const { online } = usePwa();
+    const online = useOnlineStatus();
     const [totalMissions, setTotalMissions] = useState<number | null>(null);
 
     useEffect(() => {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Mission, MissionPriority, MissionStatus } from '../../entities/mission/model/types';
-import { usePwa } from '../../pwa/use-pwa';
+import { useOnlineStatus } from '../../pwa/use-online-status';
 import { getAllMissions } from '../../services/service';
 import { ErrorState, LoadingState } from '../../shared/ui/request-state/request-state';
 import styles from './dashboard-page.module.scss';
@@ -43,7 +43,7 @@ const BreakdownCard = ({ title, items }: { title: string; items: BreakdownItem[]
 );
 
 export function DashboardPage() {
-    const { online } = usePwa();
+    const online = useOnlineStatus();
     const [missions, setMissions] = useState<Mission[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);

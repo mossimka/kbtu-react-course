@@ -1,12 +1,13 @@
-import { applyServiceWorkerUpdate } from '../../pwa/register-service-worker';
-import { dismissUpdate } from '../../pwa/pwa-store';
-import { usePwa } from '../../pwa/use-pwa';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 import styles from './update-prompt.module.scss';
 
 export const UpdatePrompt = () => {
-    const { updateAvailable, updateDismissed, applyingUpdate } = usePwa();
+    const {
+        needRefresh: [needRefresh],
+        updateServiceWorker,
+    } = useRegisterSW();
 
-    if (!updateAvailable || updateDismissed) return null;
+    if (!needRefresh) return null;
 
     return (
         <aside className={styles.root} role='alert' aria-live='assertive'>
@@ -18,11 +19,8 @@ export const UpdatePrompt = () => {
                 </span>
             </div>
             <div className={styles.actions}>
-                <button type='button' disabled={applyingUpdate} onClick={applyServiceWorkerUpdate}>
-                    {applyingUpdate ? 'UPDATING…' : 'RELOAD & UPDATE'}
-                </button>
-                <button className={styles.later} type='button' disabled={applyingUpdate} onClick={dismissUpdate}>
-                    LATER
+                <button type='button' onClick={() => updateServiceWorker(true)}>
+                    RELOAD & UPDATE
                 </button>
             </div>
         </aside>

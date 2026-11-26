@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import type { Mission, MissionInput, MissionPriority, MissionStatus } from '../../entities/mission/model/types';
 import { useAuth } from '../../features/auth/auth-context';
-import { usePwa } from '../../pwa/use-pwa';
+import { useOnlineStatus } from '../../pwa/use-online-status';
 import { ApiError, getMission, updateMission } from '../../services/service';
 import { ErrorState, LoadingState, SuccessState } from '../../shared/ui/request-state/request-state';
 
@@ -22,7 +22,7 @@ const formatDate = (value?: string) => (value ? value.replace('T', ' ').slice(0,
 export function MissionDetailsPage() {
     const { id } = useParams();
     const { user } = useAuth();
-    const { online } = usePwa();
+    const online = useOnlineStatus();
     const navigate = useNavigate();
     const numericId = id && /^\d+$/.test(id) ? Number(id) : null;
 

@@ -1,76 +1,57 @@
 import react from '@vitejs/plugin-react';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, relative, sep } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { defineConfig, type Plugin } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
+import { defineConfig, loadEnv } from 'vite';
 
-const PACKAGE_ROOT = fileURLToPath(new URL('.', import.meta.url));
-const PUBLIC_DIR = join(PACKAGE_ROOT, 'public');
-const SW_TEMPLATE = join(PACKAGE_ROOT, 'src/pwa/sw-template.js');
-
-const collectPublicFiles = (directory: string, root = directory): string[] => {
-    if (!statSync(directory, { throwIfNoEntry: false })) return [];
-
-    return readdirSync(directory).flatMap((entry) => {
-        const absolutePath = join(directory, entry);
-        const stats = statSync(absolutePath);
-
-        if (stats.isDirectory()) return collectPublicFiles(absolutePath, root);
-        return [relative(root, absolutePath).split(sep).join('/')];
-    });
-};
-
-const normalizeBase = (base: string) => (base.endsWith('/') ? base : `${base}/`);
-
-/**
- * Generates `dist/sw.js` from the service-worker template. The generated file
- * contains a versioned cache identifier and a complete precache manifest of
- * the built HTML, JS, CSS, icons and the offline page.
- */
-const orbitalPwa = (): Plugin => {
-    let basePath = '/';
-
-    return {
-        name: 'orbital-pwa',
-        apply: 'build',
-        configResolved(config) {
-            basePath = config.base;
-        },
-        generateBundle(_options, bundle) {
-            const base = normalizeBase(basePath);
-            const apiOrigin = new URL(process.env.VITE_API_URL ?? 'http://localhost:8080').origin;
-            const version = process.env.VITE_BUILD_ID ?? `${Date.now()}`;
-
-            const precache = new Set<string>([
-                base,
-                `${base}index.html`,
-                `${base}offline.html`,
-                `${base}manifest.json`,
-            ]);
-
-            Object.keys(bundle)
-                .filter((fileName) => !fileName.endsWith('.map') && fileName !== 'sw.js')
-                .forEach((fileName) => precache.add(`${base}${fileName}`));
-
-            collectPublicFiles(PUBLIC_DIR).forEach((fileName) => precache.add(`${base}${fileName}`));
-
-            const generated = readFileSync(SW_TEMPLATE, 'utf8')
-                .replaceAll('__CACHE_VERSION__', version)
-                .replaceAll('__BASE_PATH__', base)
-                .replaceAll('__API_ORIGIN__', apiOrigin)
-                .replace('__PRECACHE_URLS__', JSON.stringify([...precache], null, 4));
-
-            this.emitFile({
-                type: 'asset',
-                fileName: 'sw.js',
-                source: generated,
-            });
-        },
-    };
-};
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // https://vite.dev/config/
-export default defineConfig({
-    plugins: [react(), orbitalPwa()],
-    base: process.env.VITE_BASE_PATH ?? '/',
+export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, process.cwd(), '');
+    const apiOrigin = new URL(env.VITE_API_URL ?? 'http://localhost:8080').origin;
+
+    // Workbox serializes runtimeCaching matchers into the generated service
+    // worker, so the API origin must be embedded in the RegExp instead of
+    // captured from this module's scope.
+    const apiPattern = new RegExp(`^${escapeRegExp(apiOrigin)}(/|$)`);
+
+    return {
+        plugins: [
+            react(),
+            VitePWA({
+                registerType: 'prompt',
+                manifest: false,
+                workbox: {
+                    globPatterns: ['**/*.{js,css,html,png,svg,json}'],
+                    // The precached shell is served for navigation requests, so
+                    // the app can boot offline. `OfflineShell` then switches the
+                    // app to /offline.
+                    navigateFallback: 'index.html',
+                    cleanupOutdatedCaches: true,
+                    clientsClaim: true,
+                    runtimeCaching: [
+                        {
+                            urlPattern: ({ request }) => ['image', 'font', 'style'].includes(request.destination),
+                            handler: 'CacheFirst',
+                            options: {
+                                cacheName: 'static-assets',
+                                expiration: { maxEntries: 100, maxAgeSeconds: 30 * 24 * 60 * 60 },
+                                cacheableResponse: { statuses: [0, 200] },
+                            },
+                        },
+                        {
+                            urlPattern: apiPattern,
+                            handler: 'NetworkFirst',
+                            options: {
+                                cacheName: 'api',
+                                networkTimeoutSeconds: 5,
+                                expiration: { maxEntries: 50, maxAgeSeconds: 7 * 24 * 60 * 60 },
+                                cacheableResponse: { statuses: [200] },
+                            },
+                        },
+                    ],
+                },
+            }),
+        ],
+        base: env.VITE_BASE_PATH ?? '/',
+    };
 });
