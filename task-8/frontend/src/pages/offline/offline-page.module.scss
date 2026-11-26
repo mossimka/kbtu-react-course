@@ -1,0 +1,240 @@
+@use '../../shared/styles/tokens' as *;
+
+.page {
+    padding: 48px 32px 72px;
+}
+
+.signal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    max-width: 1180px;
+    margin: 0 auto 28px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid $line;
+    color: $muted;
+    @include mono-label($small-size, 0.1em);
+}
+
+.signal strong {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.signal strong i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.online {
+    color: $green;
+}
+
+.offline {
+    color: $red;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+    gap: 28px;
+    align-items: start;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.copy {
+    min-width: 0;
+    padding: 32px;
+    border: 1px solid $line;
+    background: rgba($panel, 0.72);
+}
+
+.eyebrow {
+    margin: 0 0 14px;
+    color: $blue;
+    @include mono-label($label-size, 0.13em);
+}
+
+.copy h1 {
+    margin: 0;
+    font-size: clamp(38px, 7vw, 76px);
+    line-height: 0.96;
+    text-transform: uppercase;
+    overflow-wrap: break-word;
+}
+
+.lead {
+    max-width: 660px;
+    margin: 22px 0 0;
+    color: $muted;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.status {
+    display: grid;
+    gap: 8px;
+    margin-top: 26px;
+    padding: 16px;
+    border: 1px solid $line-strong;
+    background: rgba($background, 0.45);
+    color: $muted;
+    @include mono-label(11px, 0.03em);
+    line-height: 1.7;
+    text-transform: uppercase;
+}
+
+.status p {
+    margin: 0;
+}
+
+.status strong {
+    color: $text;
+    font-weight: 500;
+}
+
+.cacheInfo {
+    color: $yellow !important;
+}
+
+.message {
+    color: $blue !important;
+}
+
+.warning {
+    color: $red !important;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 26px;
+}
+
+.actions button,
+.actions a {
+    display: inline-flex;
+    min-height: 46px;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    border: 1px solid $line-strong;
+    background: transparent;
+    color: $blue;
+    @include mono-label($label-size, 0.05em);
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.actions button {
+    border-color: $green-border;
+    background: rgba($green, 0.06);
+    color: $green;
+}
+
+.actions button:hover:not(:disabled),
+.actions a:hover {
+    filter: brightness(1.25);
+}
+
+.actions button:disabled {
+    cursor: wait;
+    opacity: 0.6;
+}
+
+.panel {
+    padding: 26px;
+    border: 1px solid $line;
+    background: rgba($panel, 0.55);
+}
+
+.panel ul {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid $line;
+    list-style: none;
+}
+
+.panel li {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 12px;
+    padding: 16px 0;
+    border-bottom: 1px solid $line;
+}
+
+.panel li > span {
+    color: $blue;
+    @include mono-label($small-size, 0.08em);
+}
+
+.panel li strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.panel li p {
+    margin: 0;
+    color: $muted;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.note {
+    margin: 18px 0 0;
+    color: $muted;
+    @include mono-label($small-size, 0.04em);
+    line-height: 1.7;
+    text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .copy {
+        order: 1;
+    }
+
+    .panel {
+        order: 2;
+    }
+}
+
+@media (max-width: $mobile-breakpoint) {
+    .page {
+        padding: 24px 18px 52px;
+    }
+
+    .signal {
+        margin-bottom: 18px;
+    }
+
+    .copy {
+        padding: 22px;
+    }
+
+    .actions button,
+    .actions a {
+        flex: 1 1 100%;
+        min-height: 48px;
+    }
+
+    .panel {
+        padding: 20px;
+    }
+}

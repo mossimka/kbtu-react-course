@@ -12,7 +12,8 @@ Repository: https://github.com/mossimka/kbtu-react-course
 - Searchable, filterable, sortable, paginated mission manifest
 - Mission create, edit, status update, and delete operations
 - Loading, error, empty, and success states
-- TanStack Query mission-page cache with query-based keys and invalidation
+- Redux Toolkit for all server data, request lifecycles, caching, and mutations
+- Service Worker caching, offline shell, and installable PWA
 
 ## Setup
 
@@ -52,10 +53,27 @@ docker compose up --build
 Never commit `.env.local`. Firebase browser configuration values are intended for client-side use, but Firebase
 provider and database security rules must still be configured in the Firebase console.
 
-## Caching strategy
+## Redux state management
 
-Mission list requests use TanStack Query through the shared `QueryClient`. Each query is keyed by the complete
-query object (search, filters, sort, page, and page size), stays fresh for 30 seconds, and is garbage-collected
-after five minutes. TanStack Query passes an `AbortSignal` to the API request when the query changes, so an older
-response cannot overwrite newer results. Creating, updating, changing status, or deleting a mission invalidates
-the `missions` query family, ensuring the next read uses fresh server data.
+The frontend uses Redux Toolkit with a single `configureStore` instance and React Redux's `Provider`. Redux is the
+only owner of server data; there is no second query cache. Firebase authentication remains in `AuthContext`; Redux
+does not duplicate the authenticated user or credentials.
+
+The three feature-based slices are:
+
+- `missions` — the mission page, list cache, request lifecycle, and create/update/status/delete operations.
+- `missionDetails` — the selected mission record, not-found state, and details request lifecycle.
+- `dashboard` — the full mission collection used by the analytics dashboard.
+
+Four `createAsyncThunk` operations cover the server work: `fetchMissions` (paginated list), `fetchMissionDetails`,
+`fetchDashboardMissions`, and `saveMission` (create, update, status change, delete). Each handles `pending`,
+`fulfilled`, and `rejected` in `extraReducers`. A `requestId` guard ignores responses from superseded requests, and a
+`condition` guard skips duplicate or still-fresh requests. After a successful mutation the list and dashboard are
+refreshed, while the details view is updated from the mutation response.
+
+Reusable selectors live next to their slices. `selectMissionSummary`, `selectDashboardTypes`,
+`selectFilteredDashboardMissions`, and `selectDashboardAnalytics` are memoized with `createSelector`; plain selectors
+such as `selectMissionItems` and `selectMissionMutation` are also shared. Search, filters, sorting, and pagination
+remain driven by URL parameters. The search input is local state and is written to the URL after a 300 ms debounce, so
+typing does not fire a request per keystroke. Temporary form and filter UI state stays local.
+

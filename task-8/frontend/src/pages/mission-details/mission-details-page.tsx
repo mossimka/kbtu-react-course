@@ -1,0 +1,272 @@
+import { useState, type FormEvent } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import type { Mission, MissionInput, MissionPriority, MissionStatus } from '../../entities/mission/model/types';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useAuth } from '../../features/auth/auth-context';
+import { useMissionDetails } from '../../features/mission-details/model/use-mission-details';
+import { saveMission, selectMissionMutation } from '../../features/missions/model/missions-slice';
+import { ErrorState, LoadingState, SuccessState } from '../../shared/ui/request-state/request-state';
+
+const toMissionInput = (mission: Mission): MissionInput => ({
+    name: mission.name,
+    destination: mission.destination,
+    type: mission.type,
+    status: mission.status,
+    priority: mission.priority,
+    crew: mission.crew,
+    description: mission.description ?? '',
+    launchDate: mission.launchDate ?? '',
+});
+
+const formatDate = (value?: string) => (value ? value.replace('T', ' ').slice(0, 16) : '—');
+
+export function MissionDetailsPage() {
+    const { id } = useParams();
+    const { user } = useAuth();
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const numericId = id && /^\d+$/.test(id) ? Number(id) : null;
+
+    const details = useMissionDetails(numericId);
+    const detailState = details.missionId === numericId ? details : null;
+    const mission = detailState?.mission ?? null;
+    const loading = numericId !== null && (!detailState || (detailState.status === 'pending' && !mission));
+    const error = detailState?.error ?? null;
+    const notFound = detailState?.notFound ?? false;
+    const [editing, setEditing] = useState(false);
+    const [draft, setDraft] = useState<{ id: number; input: MissionInput } | null>(null);
+    const form = mission && draft?.id === mission.id ? draft.input : mission ? toMissionInput(mission) : null;
+    const [saveMessage, setSaveMessage] = useState<string | null>(null);
+    const mutation = useAppSelector(selectMissionMutation);
+    const saving = mutation.status === 'pending';
+    const saveError = mutation.error;
+
+    const update = <K extends keyof MissionInput>(key: K, value: MissionInput[K]) => {
+        if (mission && form) setDraft({ id: mission.id, input: { ...form, [key]: value } });
+    };
+
+    const cancelEditing = () => {
+        setDraft(null);
+        setEditing(false);
+    };
+
+    const submit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (!mission || !form) return;
+
+        setSaveMessage(null);
+        const result = await dispatch(saveMission({ type: 'update', id: mission.id, input: form }));
+        if (saveMission.fulfilled.match(result)) {
+            setDraft(null);
+            setEditing(false);
+            setSaveMessage('Mission details updated successfully.');
+        }
+    };
+
+    if (loading && numericId !== null)
+        return (
+            <section className='dashboard-content'>
+                <LoadingState />
+            </section>
+        );
+
+    if (numericId === null || notFound)
+        return (
+            <section className='dashboard-content detail-page'>
+                <button className='back-button' type='button' onClick={() => navigate(-1)}>
+                    ← BACK
+                </button>
+                <div className='mission-missing'>
+                    <p className='eyebrow'>MISSION RECORD / NOT FOUND</p>
+                    <h1>Mission not found</h1>
+                    <p>
+                        No mission exists for ID <code>{id ?? 'unknown'}</code>. It may have been deleted, or the link
+                        may be invalid.
+                    </p>
+                    <div className='mission-missing-actions'>
+                        <Link to='/missions'>← RETURN TO MANIFEST</Link>
+                        <Link to='/'>GO TO HOME</Link>
+                    </div>
+                </div>
+            </section>
+        );
+
+    if (error || !mission || mission.id !== numericId)
+        return (
+            <section className='dashboard-content detail-page'>
+                <button className='back-button' type='button' onClick={() => navigate(-1)}>
+                    ← BACK
+                </button>
+                <ErrorState message={error ?? 'Mission details are unavailable.'} onRetry={details.retry} />
+            </section>
+        );
+
+    return (
+        <section className='dashboard-content detail-page'>
+            <div className='detail-toolbar'>
+                <button className='back-button' type='button' onClick={() => navigate(-1)}>
+                    ← BACK
+                </button>
+                <Link className='manifest-link' to='/missions'>
+                    ALL MISSIONS
+                </Link>
+            </div>
+
+            <p className='eyebrow'>MISSION RECORD / #{mission.id}</p>
+            {saveMessage && <SuccessState message={saveMessage} />}
+            {saveError && (
+                <ErrorState
+                    message={saveError}
+                    onRetry={() => {
+                        if (!form) return;
+                        setSaveMessage(null);
+                        void dispatch(saveMission({ type: 'update', id: mission.id, input: form }));
+                    }}
+                />
+            )}
+
+            {editing && form ? (
+                <form className='mission-form detail-form' onSubmit={submit}>
+                    <label>
+                        Mission name
+                        <input
+                            required
+                            minLength={3}
+                            value={form.name}
+                            onChange={(event) => update('name', event.target.value)}
+                        />
+                    </label>
+                    <label>
+                        Destination
+                        <input
+                            required
+                            value={form.destination}
+                            onChange={(event) => update('destination', event.target.value)}
+                        />
+                    </label>
+                    <label>
+                        Mission type
+                        <input required value={form.type} onChange={(event) => update('type', event.target.value)} />
+                    </label>
+                    <label>
+                        Launch date
+                        <input
+                            required
+                            type='date'
+                            value={form.launchDate}
+                            onChange={(event) => update('launchDate', event.target.value)}
+                        />
+                    </label>
+                    <label>
+                        Status
+                        <select
+                            value={form.status}
+                            onChange={(event) => update('status', event.target.value as MissionStatus)}
+                        >
+                            <option value='active'>Active</option>
+                            <option value='completed'>Completed</option>
+                        </select>
+                    </label>
+                    <label>
+                        Priority
+                        <select
+                            value={form.priority}
+                            onChange={(event) => update('priority', event.target.value as MissionPriority)}
+                        >
+                            <option value='critical'>Critical</option>
+                            <option value='high'>High</option>
+                            <option value='medium'>Medium</option>
+                            <option value='low'>Low</option>
+                        </select>
+                    </label>
+                    <label>
+                        Crew size
+                        <input
+                            required
+                            type='number'
+                            min='1'
+                            max='20'
+                            value={form.crew}
+                            onChange={(event) => update('crew', Number(event.target.value))}
+                        />
+                    </label>
+                    <label className='wide'>
+                        Description
+                        <textarea
+                            rows={5}
+                            value={form.description}
+                            onChange={(event) => update('description', event.target.value)}
+                        />
+                    </label>
+                    <div className='form-actions'>
+                        <button disabled={saving} type='submit'>
+                            {saving ? 'SAVING...' : 'SAVE CHANGES'}
+                        </button>
+                        <button className='secondary-action' disabled={saving} type='button' onClick={cancelEditing}>
+                            CANCEL
+                        </button>
+                    </div>
+                </form>
+            ) : (
+                <>
+                    <div className='detail-heading'>
+                        <h1>{mission.name}</h1>
+                        {user ? (
+                            <button
+                                type='button'
+                                onClick={() => {
+                                    setSaveMessage(null);
+                                    setEditing(true);
+                                }}
+                            >
+                                EDIT MISSION
+                            </button>
+                        ) : (
+                            <Link
+                                className='manifest-link'
+                                to={`/login?redirect=${encodeURIComponent(`/missions/${mission.id}`)}`}
+                            >
+                                SIGN IN TO EDIT
+                            </Link>
+                        )}
+                    </div>
+                    <div className='detail-grid'>
+                        <div>
+                            <span>DESTINATION</span>
+                            <strong>{mission.destination}</strong>
+                        </div>
+                        <div>
+                            <span>MISSION TYPE</span>
+                            <strong>{mission.type.replaceAll('_', ' ')}</strong>
+                        </div>
+                        <div>
+                            <span>STATUS</span>
+                            <strong>{mission.status}</strong>
+                        </div>
+                        <div>
+                            <span>PRIORITY</span>
+                            <strong>{mission.priority}</strong>
+                        </div>
+                        <div>
+                            <span>CREW SIZE</span>
+                            <strong>{mission.crew}</strong>
+                        </div>
+                        <div>
+                            <span>LAUNCH DATE</span>
+                            <strong>{formatDate(mission.launchDate)}</strong>
+                        </div>
+                        <div>
+                            <span>CREATED</span>
+                            <strong>{formatDate(mission.createdAt)}</strong>
+                        </div>
+                        <div>
+                            <span>RECORD ID</span>
+                            <strong>#{mission.id}</strong>
+                        </div>
+                    </div>
+                    <p className='description'>{mission.description || 'No mission briefing was provided.'}</p>
+                </>
+            )}
+        </section>
+    );
+}
